@@ -1,6 +1,17 @@
-
-BasedOnStyle: Mozilla
-IndentWidth: 4
+---
+AllowShortLoopsOnASingleLine: false
+AllowShortEnumsOnASingleLine: true
+Standard: c++17
 TabWidth: 4
-UseTab: Never
-ColumnLimit: 90
+UseTab: ForIndentation
+IndentWidth: 4
+IndentCaseBlocks: true
+IndentCaseLabels: true
+SortIncludes:
+  Enabled: true
+SpaceAfterOperatorKeyword: false
+SpaceAfterTemplateKeyword: true
+ColumnLimit: 75
+BinPackArguments: false
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
