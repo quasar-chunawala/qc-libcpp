@@ -4,7 +4,7 @@ project(core VERSION 1.0.0.0)
 set(CMAKE_CXX_STANDARD 26)              # C++ standard
 set(CMAKE_CXX_STANDARD_REQUIRED ON)     # Error, if the compiler doesn't support it
 
-file(GLOB_RECURSE CORE_SRC 
+file(GLOB_RECURSE CORE_SOURCES 
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
 )
 
@@ -16,8 +16,10 @@ file(GLOB_RECURSE CORE_HEADERS
 add_library(core STATIC)
 
 target_sources(core
-    PRIVATE ${CORE_SOURCES}
-    PUBLIC FILE_SET HEADERS
+    PRIVATE 
+        ${CORE_SOURCES}
+    PUBLIC 
+        FILE_SET HEADERS
         BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
         FILES ${CORE_HEADERS}
 )
