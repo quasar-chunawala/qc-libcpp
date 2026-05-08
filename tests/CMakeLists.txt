@@ -8,6 +8,7 @@ include(FetchContent)
 fetchcontent_declare(googletest
     GIT_REPOSITORY 
         https://github.com/google/googletest.git
+    GIT_TAG main
 )
 
 fetchcontent_makeavailable(googletest)
@@ -21,7 +22,7 @@ file(GLOB_RECURSE CORE_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
 )
 
-add_library(cppx_tests STATIC)
+add_executable(cppx_tests)
 
 target_sources(core
     PRIVATE 
@@ -30,4 +31,9 @@ target_sources(core
         FILE_SET HEADERS
         BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
         FILES ${CORE_HEADERS}
+)
+
+target_link_libraries(cppx_tests
+    PRIVATE
+        GTest::gtest_main
 )
