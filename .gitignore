@@ -50,3 +50,6 @@ tasks.json
 
 # Folders
 coverage_report
+
+# VSCode settings
+.vscode/settings.json
