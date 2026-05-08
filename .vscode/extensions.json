@@ -10,6 +10,8 @@
         "ms-vscode.cmake-tools",
         "vadimcn.vscode-lldb",
         "waderyan.gitblame",
-        "xaver.clang-format"
+        "xaver.clang-format",
+        "github.vscode-pull-request-github",
+        "ms-vsliveshare.vsliveshare"
     ]
 }
