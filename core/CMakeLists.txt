@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.5...4.0)
 
 set(CMAKE_CXX_STANDARD 23)              # C++ standard
 set(CMAKE_CXX_STANDARD_REQUIRED ON)     # Error, if the compiler doesn't support it
