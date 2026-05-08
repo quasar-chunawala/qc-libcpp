@@ -1,0 +1,15 @@
+{
+    "recommendations": [
+        "llvm-vs-code-extensions.vscode-clangd",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode-remote.vscode-remote-extensionpack",
+        "cs128.cs128-clang-tidy",
+        "donjayamanne.githistory",
+        "josetr.cmake-language-support-vscode",
+        "mhutchie.git-graph",
+        "ms-vscode.cmake-tools",
+        "vadimcn.vscode-lldb",
+        "waderyan.gitblame",
+        "xaver.clang-format"
+    ]
+}
