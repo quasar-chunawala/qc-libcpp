@@ -13,27 +13,28 @@ fetchcontent_declare(googletest
 
 fetchcontent_makeavailable(googletest)
 
-file(GLOB_RECURSE CORE_SOURCES 
+file(GLOB_RECURSE TESTS_SOURCES 
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
 )
 
-file(GLOB_RECURSE CORE_HEADERS
+file(GLOB_RECURSE TESTS_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/*.h
     ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
 )
 
 add_executable(cppx_tests)
 
-target_sources(core
+target_sources(cppx_tests
     PRIVATE 
-        ${CORE_SOURCES}
-    PUBLIC 
-        FILE_SET HEADERS
-        BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
-        FILES ${CORE_HEADERS}
+        ${TESTS_SOURCES}
+        ${TESTS_HEADERS}
 )
 
 target_link_libraries(cppx_tests
     PRIVATE
+        core
         GTest::gtest_main
 )
+
+include(GoogleTest)
+gtest_discover_tests(cppx_tests)

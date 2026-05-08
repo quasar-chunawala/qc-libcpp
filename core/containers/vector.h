@@ -177,10 +177,12 @@ template <typename T> struct Iterator {
 	 * @param rhs The right-hand side Iterator.
 	 * @return Result of the comparison.
 	 */
-	[[nodiscard]] friend auto operator<= >
+	// clang-format off
+	[[nodiscard]] friend auto operator<=>
 	    (const Iterator &lhs, const Iterator &rhs) {
-		return lhs.m_ptr <= > rhs.m_ptr;
+		return lhs.m_ptr <=> rhs.m_ptr;
 	}
+	// clang-format on
 
 	/**
 	 * @brief Checks if two Iterators are equal.

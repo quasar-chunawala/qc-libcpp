@@ -1,0 +1,101 @@
+{
+    "version": 11,
+    "cmakeMinimumRequired": {
+        "major": 4,
+        "minor": 0
+    },
+    "configurePresets": [
+        {
+            "name": "config-base",
+            "hidden": true,
+            "displayName": "config-base",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}"
+        },
+        {
+            "name": "config-debug",
+            "hidden": true,
+            "inherits": "config-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "config-release",
+            "hidden": true,
+            "inherits": "config-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "clang-debug",
+            "inherits": "config-debug",
+            "displayName": "clang-debug",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "clang-release",
+            "inherits": "config-release",
+            "displayName": "clang-release",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "gcc-debug",
+            "inherits": "config-debug",
+            "displayName": "gcc-debug",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        },
+        {
+            "name": "gcc-release",
+            "inherits": "config-release",
+            "displayName": "gcc-release",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        },
+        {
+            "name": "msvc",
+            "inherits": "config-base",
+            "displayName": "msvc",
+            "generator": "Visual Studio 17 2022",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "cl"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "clang-debug",
+            "configurePreset": "clang-debug"
+        },
+        {
+            "name": "clang-release",
+            "configurePreset": "clang-release"
+        },
+        {
+            "name": "gcc-debug",
+            "configurePreset": "gcc-debug"
+        },
+        {
+            "name": "gcc-release",
+            "configurePreset": "gcc-release"
+        },
+        {
+            "name": "msvc-debug",
+            "configurePreset": "msvc",
+            "configuration": "configure-debug"
+        },
+        {
+            "name": "msvc-release",
+            "configurePreset": "msvc",
+            "configuration": "configure-release"
+        }
+    ]
+}

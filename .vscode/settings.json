@@ -6,5 +6,7 @@
         "editor.stickyScroll.defaultModel": "foldingProviderModel",
         "editor.suggest.insertMode": "replace",
         "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
-    }
+    },
+    "cmake.useCMakePresets": "always",
+    "cmake.ctest.testExplorerIntegrationEnabled": true
 }

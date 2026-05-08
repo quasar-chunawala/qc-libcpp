@@ -19,7 +19,7 @@ target_sources(core
         ${CORE_SOURCES}
     PUBLIC 
         FILE_SET HEADERS
-        BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
+        BASE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/.."
         FILES ${CORE_HEADERS}
 )
 
