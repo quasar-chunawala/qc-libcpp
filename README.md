@@ -1,5 +1,5 @@
 # cppx
-**cppx** is a collection of C++ data-structures, lock-free and wait-free algorithms used in quantitative trading and finance.
+**cppx** is a collection of data-structures, lock-free and wait-free algorithms written in modern C++ and used in quantitative trading and finance.
 
 ## Build
 
