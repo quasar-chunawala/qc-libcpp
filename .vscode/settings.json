@@ -10,6 +10,9 @@
     "cmake.useCMakePresets": "always",
     "cmake.ctest.testExplorerIntegrationEnabled": true,
     "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
+    "clangd.arguments": [
+        "--compile-commands-dir=${workspaceFolder}"
+    ],
     "cmake.statusbar.advanced": {
         // "folder": {
         //     "visibility": "visible"
