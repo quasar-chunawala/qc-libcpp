@@ -52,4 +52,4 @@ tasks.json
 coverage_report
 
 # VSCode settings
-.vscode/settings.json
+.vscode/
