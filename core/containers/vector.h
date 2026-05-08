@@ -1,867 +1,395 @@
-#include <algorithm>
-#include <cassert>
 #include <cstddef>
+#include <cstdint>
 #include <format>
 #include <initializer_list>
-#include <iostream>
-#include <iterator>
 #include <memory>
+#include <print>
 #include <stdexcept>
 #include <type_traits>
 #include <utility>
 
-// Compiler Explorer: https://godbolt.org/z/z5oYqjdv5
 namespace dev {
 
-/**
- * @brief A standard container that offers constant-time
- * access to individual elements in any order.
- */
-template <typename T> class vector;
-
-/**
- * @brief @a vector::Iterator<T> satisfies the contiguous iterator
- * concept. It is a light wrapper over a pointer-to-T. With random
- * access iterators, you can jump around your collection in
- * arbitrary-sized steps in constant time. it += n is a constant-time
- * operation. Contiguous iterators provide the additional guarantee
- * that, the elements of the collection are stored contiguously in
- * memory. it + n == std::to_address(*it) + n.
- */
-template <typename T> struct Iterator {
-	using iterator_concept = std::contiguous_iterator_tag;
-	using difference_type = std::ptrdiff_t;
-	using value_type = T;
-	using reference = T &;
-	using const_reference = const T &;
-	using pointer = T *;
-	using pointer_to_const = const T *;
-	using size_type = std::size_t;
-	friend vector<T>;
-	friend Iterator<const T>;
-	friend Iterator<std::remove_const_t<T>>;
-
-	/**
-	 * @brief Default constructor for Iterator.
-	 */
-	Iterator() : m_ptr{nullptr} {}
-
-	/**
-	 * @brief Constructs an Iterator from a raw pointer.
-	 * @param ptr Pointer to the element.
-	 */
-	explicit Iterator(pointer ptr) : m_ptr(ptr) {}
-
-	/**
-	 * @brief Constructs an Iterator from another Iterator.
-	 * @tparam U The type of the other Iterator.
-	 * @param other The other Iterator to copy from.
-	 */
-	template <typename U>
-	requires std::is_convertible_v<std::remove_const_t<U> *, T *>
-	Iterator(const Iterator<U> &other)
-	    : m_ptr{const_cast<T *>(other.m_ptr)} {}
-
-	/**
-	 * @brief Pre-increment operator.
-	 * @return Reference to the incremented Iterator.
-	 */
-	Iterator &operator++() {
-		++m_ptr;
-		return *this;
-	}
-
-	/**
-	 * @brief Post-increment operator.
-	 * @return Copy of the Iterator before incrementing.
-	 */
-	Iterator operator++(int) {
-		auto temp = *this;
-		++m_ptr;
-		return temp;
-	}
-
-	/**
-	 * @brief Pre-decrement operator.
-	 * @return Reference to the decremented Iterator.
-	 */
-	Iterator &operator--() {
-		--m_ptr;
-		return *this;
-	}
-
-	/**
-	 * @brief Post-decrement operator.
-	 * @return Copy of the Iterator before decrementing.
-	 */
-	Iterator operator--(int) {
-		auto temp = *this;
-		--m_ptr;
-		return (*this);
-	}
-
-	/**
-	 * @brief Adds an offset to the Iterator.
-	 * @param n The offset to add.
-	 * @return A new Iterator pointing to the new position.
-	 */
-	auto operator+(difference_type n) const { return Iterator(m_ptr + n); }
-	friend auto operator+(difference_type n, Iterator j) {
-		return (j + n);
-	}
-
-	/**
-	 * @brief Adds an offset to the Iterator and assigns it.
-	 * @param n The offset to add.
-	 * @return Reference to the updated Iterator.
-	 */
-	Iterator &operator+=(size_type n) {
-		m_ptr += n;
-		return *this;
-	}
-
-	/**
-	 * @brief Subtracts an offset from the Iterator.
-	 * @param n The offset to subtract.
-	 * @return A new Iterator pointing to the new position.
-	 */
-	auto operator-(size_type n) const { return Iterator(m_ptr - n); }
-	friend auto operator-(difference_type n, Iterator j) {
-		return (j - n);
-	}
-
-	/**
-	 * @brief Subtracts an offset from the Iterator and assigns it.
-	 * @param n The offset to subtract.
-	 * @return Reference to the updated Iterator.
-	 */
-	Iterator &operator-=(size_type n) {
-		m_ptr -= n;
-		return *this;
-	}
-
-	/**
-	 * @brief Accesses the element at the given index.
-	 * @param i The index to access.
-	 * @return Reference to the element at the index.
-	 */
-	reference operator[](size_type i) const { return m_ptr[i]; }
-
-	/**
-	 * @brief Dereferences the Iterator.
-	 * @return Reference to the element pointed to by the Iterator.
-	 */
-	reference operator*() { return *m_ptr; }
-	const_reference operator*() const { return *m_ptr; }
-
-	/**
-	 * @brief Accesses the member of the element pointed to by the
-	 * Iterator.
-	 * @return Pointer to the element.
-	 */
-	pointer operator->() { return m_ptr; }
-	pointer_to_const operator->() const { return m_ptr; }
-
-	/**
-	 * @brief Computes the distance between two Iterators.
-	 * @param other The other Iterator.
-	 * @return The distance between the two Iterators.
-	 */
-	difference_type operator-(const Iterator &other) const {
-		return m_ptr - other.m_ptr;
-	}
-
-	/**
-	 * @brief Compares two Iterators using the spaceship operator.
-	 * @param lhs The left-hand side Iterator.
-	 * @param rhs The right-hand side Iterator.
-	 * @return Result of the comparison.
-	 */
-	// clang-format off
-	[[nodiscard]] friend auto operator<=>
-	    (const Iterator &lhs, const Iterator &rhs) {
-		return lhs.m_ptr <=> rhs.m_ptr;
-	}
-	// clang-format on
-
-	/**
-	 * @brief Checks if two Iterators are equal.
-	 * @param lhs The left-hand side Iterator.
-	 * @param rhs The right-hand side Iterator.
-	 * @return True if the Iterators are equal, false otherwise.
-	 */
-	friend bool operator==(const Iterator &lhs, const Iterator &rhs) {
-		return lhs.m_ptr == rhs.m_ptr;
-	}
-
-	/**
-	 * @brief Moves the element pointed to by the Iterator.
-	 * @param it The Iterator.
-	 * @return The moved element.
-	 */
-	friend auto &&iter_move(Iterator it) { return std::move(*it); }
-
-  private:
-	pointer m_ptr;
-	pointer get() { return m_ptr; }
-};
-
 template <typename T> class vector {
-  public:
 	using value_type = T;
 	using size_type = std::size_t;
 	using pointer = T *;
 	using const_pointer = const T *;
 	using reference = T &;
 	using const_reference = const T &;
-	using iterator = Iterator<T>;
-	using const_iterator = Iterator<const T>;
+	using iterator = pointer;
+	using const_iterator = const_pointer;
 
   private:
-	pointer m_elements{nullptr};
-	size_type m_size{0};
-	size_type m_capacity{0};
-	friend iterator;
+	pointer m_data{nullptr};
+	size_type m_size{0uz};
+	size_type m_capacity{0uz};
+	constexpr static unsigned short growth_factor{2};
 
-	/**
-	 * @brief Checks if the container is full.
-	 * @return True if the container is full, false otherwise.
-	 */
-	[[nodiscard]] bool full() { return size() == capacity(); }
-
-	/**
-	 * @brief Grows the container to twice its current capacity.
-	 */
-	void grow() { reserve(capacity() ? capacity() * 2 : 16); }
-
-	/**
-	 * @brief Cleans up the range [begin(), last) in case of an exception.
-	 * @param last The end of the range to clean up.
-	 */
-	void cleanup_on_fail_aux(Iterator<T> last) {
-		auto p{begin()};
-		for (; p != last; ++p)
-			std::destroy_at(p.m_ptr);
-
-		::operator delete(m_elements);
-	}
-
-	/**
-	 * @brief Fills the raw memory block %[begin(), begin() + size) with %n
-	 * copies of %init.
-	 */
-	template <typename U>
-	requires std::is_convertible_v<U, T> void copy_aux(const U &init,
-	                                                   size_t size) {
-		auto i{begin()};
-		try {
-			for (; i != begin() + size; ++i)
-				std::construct_at(i.m_ptr, init);
-		} catch (std::exception &ex) {
-			cleanup_on_fail_aux(i);
-			throw ex; // rethrow
+	struct raw_deleter {
+		// only frees the memory, doesn't destroy objects
+		void operator()(T *ptr) noexcept {
+			operator delete(ptr, std::align_val_t(alignof(value_type)));
 		}
+	};
+
+	using raw_ptr = std::unique_ptr<T, raw_deleter>;
+	struct init_capacity_tag {
+		size_type cap;
+	};
+
+	// If an exception happens after this has been called,
+	// the destructor will run and deallocate the memory.
+	explicit vector(init_capacity_tag cap)
+	    : m_data{allocate_helper(cap.cap).release()}, m_capacity{cap.cap} {
 	}
 
-	/**
-	 * @brief Copies values from the range %[first,last)
-	 * to %[begin(),begin()+std::distance(first,last)).
-	 */
-	template <typename It>
-	requires std::forward_iterator<It> void copy_rng_aux(It first,
-	                                                     It last) {
-		auto i{begin()};
-		auto j{first};
+	template <typename U> void push_back_slow_path(U &&value) {
+		// allocate more memory
+		size_type new_capacity =
+		    capacity() ? growth_factor * capacity() : 1;
+		size_type offset = size();
+		size_type new_size = m_size + 1;
+		auto mem = allocate_helper(new_capacity);
+		std::construct_at(mem.get() + m_size, std::forward<U>(value));
+
 		try {
-			for (; j != last; ++i, ++j)
-				std::construct_at(i.m_ptr, *j);
+			copy_old_storage_to_new(m_data, m_size, mem.get());
 		} catch (std::exception &ex) {
-			cleanup_on_fail_aux(i);
-			throw ex; // rethrow
+			std::destroy_at(mem.get() + m_size);
 		}
+
+		pointer ptr_new = mem.release();
+		mem.reset(m_data);
+		m_data = ptr_new;
+		++m_size;
+		m_capacity = new_capacity;
 	}
 
-	/**
-	 * @brief Allocates raw memory for the container.
-	 * @param new_capacity The new capacity of the container.
-	 * @return Pointer to the allocated memory.
-	 */
-	pointer allocate_aux(size_t new_capacity) {
-		auto p = static_cast<pointer>(
-		    ::operator new(sizeof(value_type) * new_capacity));
-		return p;
+	template <typename U> void push_back_fast_path(U &&value) {
+		std::construct_at(m_data + m_size, std::forward<U>(value));
+		++m_size;
 	}
 
-	/**
-	 * @brief Copies elements from old storage to new.
-	 * @param ptr_to_new_storage_block Pointer to the new storage block.
-	 */
-	void copy_old_storage_to_new(pointer ptr_to_new_storage_block) {
-		iterator d_first = iterator(ptr_to_new_storage_block);
+	raw_ptr allocate_helper(size_type new_capacity) {
+		auto ptr = operator new(sizeof(value_type) * new_capacity,
+		                        std::align_val_t(alignof(value_type)));
+		return raw_ptr(static_cast<pointer>(ptr));
+	}
 
+	// Copies elements from old storage to new
+	// If T's copy/move ctor throws, the objects already constructed are
+	// destroyed and the exception is propagated to the caller.
+	void copy_old_storage_to_new(pointer source_first, size_t num_elements,
+	                             pointer destination_first) {
 		if constexpr (std::is_nothrow_move_constructible_v<T>) {
-			std::uninitialized_move(begin(), end(), d_first);
+			std::uninitialized_move(source_first,
+			                        source_first + num_elements,
+			                        destination_first);
 		} else {
-			try {
-				std::uninitialized_copy(begin(), end(), d_first);
-			} catch (std::exception &ex) {
-				::operator delete(ptr_to_new_storage_block);
-				throw ex; // rethrow
-			}
+			std::uninitialized_copy(source_first,
+			                        source_first + num_elements,
+			                        destination_first);
 		}
 	}
 
-	/**
-	 * @brief helper function to destroy the range [first,last) and
-	 * deallocate the memory block pointed to by ptr.
-	 */
-	template <typename It>
-	void destroy_aux(It first, It last, pointer ptr) {
-		std::destroy(first, last);
-		::operator delete(ptr);
+	template <typename... Args>
+	reference emplace_back_slow_path(Args &&...args) {
+		// allocate more memory
+		size_type offset = size();
+		size_type new_size = m_size + 1;
+		size_type new_capacity =
+		    capacity() ? growth_factor * capacity() : 1;
+		auto mem = allocate_helper(new_capacity);
+
+		std::construct_at(mem.get() + m_size, std::forward<Args>(args)...);
+		try {
+			copy_old_storage_to_new(m_data, m_size, mem.get());
+		} catch (std::exception &ex) {
+			std::destroy_at(mem.get() + m_size);
+		}
+
+		pointer ptr_new = mem.release();
+		mem.reset(m_data);
+		m_data = ptr_new;
+		++m_size;
+		m_capacity = new_capacity;
+		return back();
 	}
 
-	/**
-	 * @brief helper function to copy/move-construct %value
-	 * into raw-memory pointed to by %ptr.
-	 */
-	template <typename U>
-	requires std::is_convertible_v<U, T> void
-	construct_at_addr(pointer ptr, U &&value) {
-		if constexpr (std::is_nothrow_move_constructible_v<U>) {
-			std::construct_at(ptr, std::move(value));
-		} else {
-			std::construct_at(ptr, value);
-		}
+	template <typename... Args>
+	reference emplace_back_fast_path(Args &&...args) {
+		std::construct_at(m_data + m_size, std::forward<Args>(args)...);
+		++m_size;
+		return back();
 	}
+	bool is_full() { return size() == capacity(); }
 
   public:
-	// Capacity related member functions
-	/**
-	 * @brief Returns the number of elements in the vector
-	 */
-	[[nodiscard]] size_type size() const { return m_size; }
+	iterator begin() { return m_data; }
+	const_iterator begin() const { return m_data; }
+	iterator end() { return begin() + m_size; }
+	const_iterator end() const { return begin() + m_size; }
 
-	/**
-	 * @brief Returns the total number of elements that the vector can
-	 * hold.
-	 */
-	[[nodiscard]] size_type capacity() const { return m_capacity; }
+	size_type size() const { return m_size; }
+	size_type capacity() const { return m_capacity; }
 
-	/**
-	 * @brief Returns true if the vector is empty.
-	 */
-	bool empty() const { return m_size == 0; }
+	vector() noexcept {}
 
-	// Constructors
-	/**
-	 * @brief Creates a vector with no elements.
-	 */
-	vector() = default;
-
-	/**
-	 * @brief Creates a vector with @a n copies of an element.
-	 * @param n Number of elements to initially create.
-	 * @param init An element to copy.
-	 */
-	vector(size_type n, const_reference init)
-	    : m_elements(allocate_aux(n)), m_size{0}, m_capacity{n} {
-		copy_aux(init, n);
+	vector(size_t n, const T &initial_value)
+	    : vector(init_capacity_tag(n)) {
+		std::uninitialized_fill_n(m_data, n, initial_value);
 		m_size = n;
 	}
 
-	/**
-	 * @brief vector copy constructor
-	 * @param other A vector of identical element type %T
-	 */
-	explicit vector(const vector &other)
-	    : m_elements(allocate_aux(other.m_size)), m_size{other.m_size},
-	      m_capacity{other.m_size} {
-		copy_rng_aux(other.begin(), other.end());
+	// Constructs a vector with count default-inserted
+	// objects of T. No copies are made.
+	explicit vector(size_t n) : vector(init_capacity_tag(n)) {
+		std::uninitialized_default_construct(m_data, m_data + n);
+		m_size = n;
 	}
 
-	/**
-	 * @brief swaps data with another vector.
-	 * The global %std::swap function is specialized
-	 * such that %std::swap(v1,v2) will feed to this function.
-	 */
+	vector(std::initializer_list<T> list)
+	    : vector(init_capacity_tag(list.size())) {
+		std::uninitialized_copy(list.begin(), list.end(), m_data);
+		m_size = list.size();
+	}
+
+	vector(const_iterator first, const_iterator last)
+	    : vector(init_capacity_tag(std::distance(first, last))) {
+		if constexpr (std::is_nothrow_move_constructible_v<T>) {
+			std::uninitialized_move(first, last, m_data);
+		} else {
+			std::uninitialized_copy(first, last, m_data);
+		}
+		m_size = std::distance(first, last);
+	}
+
+	vector(const vector &other)
+	    : vector(init_capacity_tag(other.capacity())) {
+		// Perform a deep-copy of all the Ts
+		std::uninitialized_copy(other.m_data,
+		                        other.m_data + other.m_size,
+		                        m_data);
+		m_size = other.size();
+	}
+
+	vector(vector &&other) noexcept
+	    : m_data{std::exchange(other.m_data, nullptr)},
+	      m_size{std::exchange(other.m_size, 0)},
+	      m_capacity{std::exchange(other.m_capacity, 0)} {}
+
 	void swap(vector &other) noexcept {
-		using std::swap;
-		swap(m_elements, other.m_elements);
-		swap(m_size, other.m_size);
-		swap(m_capacity, other.m_capacity);
+		std::swap(this->m_data, other.m_data);
+		std::swap(this->m_size, other.m_size);
+		std::swap(this->m_capacity, other.m_capacity);
 	}
 
-	/**
-	 * @brief vector copy assignment operator
-	 */
 	vector &operator=(const vector &other) {
 		vector(other).swap(*this);
-		return (*this);
+		return *this;
 	}
 
-	/**
-	 * @brief vector move constructor
-	 * The newly-created vector contains the exact contents of %other.
-	 * The contents of %other are a valid, but unspecified.
-	 */
-	vector(vector &&other) noexcept
-	    : m_elements(std::exchange(other.m_elements, nullptr)),
-	      m_capacity(std::exchange(other.m_capacity, 0)),
-	      m_size(std::exchange(other.m_size, 0)) {}
-
-	/**
-	 * @brief vector move assignment operator
-	 * The contents of %other are moved into this vector(without copying).
-	 */
-	vector &operator=(vector &&other) noexcept {
+	vector &operator=(vector &&other) {
 		vector(std::move(other)).swap(*this);
 		return *this;
 	}
 
-	/**
-	 * @brief This constructor fills a vector with copies of
-	 * the elements in the initializer list
-	 */
-	vector(std::initializer_list<T> src)
-	    : m_elements{allocate_aux(src.size())}, m_size{src.size()},
-	      m_capacity{src.size()} {
-		copy_rng_aux(src.begin(), src.end());
-	}
-
-	/**
-	 * @brief Assigns an initializer list to a vector.
-	 * @note All iterators including the end() iterator and any references
-	 * to vector elements are invalidate.
-	 */
-	vector &operator=(std::initializer_list<T> src) {
-		return assign(src.begin(), src.end());
-	}
-
-	/**
-	 * @brief Assigns a range to a vector.
-	 * @note All iterators including the end() iterator and any references
-	 * to vector elements are invalidate.
-	 */
-	template <typename InputIt>
-	vector &assign(InputIt first, InputIt last) {
-		size_t n = std::distance(first, last);
-		if (n > capacity()) {
-			// Triggers Reallocation
-			pointer p = allocate_aux(n);
-			iterator d_first = iterator(p);
-			std::uninitialized_copy(first, last, d_first);
-
-			destroy_aux(begin(), end(), m_elements);
-			m_elements = p;
-			m_size = n;
-			m_capacity = n;
-		} else {
-			std::destroy(begin(), end());
-			std::uninitialized_copy(first, last, begin());
-			m_size = n;
-		}
-		return *this;
-	}
-
-	/**
-	 * @brief Destructor
-	 */
 	~vector() {
 		std::destroy(begin(), end());
-		::operator delete(m_elements);
+		raw_deleter{}(m_data);
 	}
 
-	/**
-	 * @brief Returns a read/write iterator that points to the first
-	 * element of the vector.
-	 */
-	auto begin() { return iterator(m_elements); }
+	bool empty() { return m_size == 0; }
 
-	auto begin() const { return const_iterator(m_elements); }
-
-	/**
-	 * @brief Returns a read-only iterator to the first element
-	 * of the vector.
-	 */
-	const_iterator cbegin() const noexcept {
-		return const_iterator(m_elements);
-	}
-
-	/**
-	 * @brief Returns a read/write iterator that points to one past the
-	 * last element of the vector.
-	 */
-	auto end() { return iterator(m_elements + m_size); }
-
-	auto end() const { return const_iterator(m_elements + m_size); }
-
-	/**
-	 * @brief Returns a read-only iterator to one-past-the-last element
-	 * of the vector.
-	 */
-	const_iterator cend() const noexcept {
-		return const_iterator(m_elements + m_size);
-	}
-
-	/**
-	 * @brief Read/write reference to the data at index n
-	 */
-	reference at(size_type n) {
-		if (n >= 0 && n < m_size)
-			return m_elements[n];
-		else
-			throw std::out_of_range("Index out of bounds!");
-	}
-
-	/**
-	 * @brief Read-only reference to the data at index n
-	 */
-	const_reference at(size_type n) const {
-		if (n >= 0 && n < m_size)
-			return m_elements[n];
-		else
-			throw std::out_of_range("Index out of bounds!");
-	}
-
-	/**
-	 * @brief Array subscript operator.
-	 * Returns a read/write reference to the element at index %n.
-	 */
-	reference operator[](size_type n) { return m_elements[n]; }
-
-	/**
-	 * @brief Array subscript operator.
-	 * Returns a read-only reference to the element at index %n.
-	 */
-	const_reference operator[](size_type n) const { return m_elements[n]; }
-
-	/**
-	 * @brief Accesses the first element of the container
-	 */
-	reference front() { return m_elements[0]; }
-	const_reference front() const { return m_elements[0]; }
-
-	/**
-	 * @brief Accesses the last element of the container
-	 */
-	reference back() { return m_elements[m_size - 1]; }
-	const_reference back() const { return m_elements[m_size - 1]; }
-
-	// Modifiers
-	/**
-	 * @brief Add data to the end of the vector
-	 */
-	template <typename U>
-	requires std::is_convertible_v<U, T> void push_back(U &&value) {
-		size_t new_capacity = m_capacity ? 2 * m_capacity : 16;
-
-		if (full()) {
-			// can throw, if allocation fails
-			pointer p = allocate_aux(new_capacity);
-			try {
-				// can throw if copy c'tor fails
-				construct_at_addr(p + m_size, std::forward<U>(value));
-			} catch (std::exception &ex) {
-				::operator delete(p);
-				throw ex;
-			}
-
-			copy_old_storage_to_new(p);
-
-			// Deallocate old storage
-			destroy_aux(begin(), end(), m_elements);
-
-			// Reassign m_elements and m_capacity
-			m_elements = p;
-			m_capacity = new_capacity;
+	template <typename U> void push_back(U &&value) {
+		if (is_full()) {
+			push_back_slow_path(std::forward<U>(value));
 		} else {
-			std::construct_at(begin().get() + m_size,
-			                  std::forward<U>(value));
+			push_back_fast_path(std::forward<U>(value));
 		}
-		++m_size;
 	}
 
-	/**
-	 * @brief Removes the last element
-	 */
+	reference operator[](size_type idx) { return m_data[idx]; }
+
+	const_reference operator[](size_type idx) const { return m_data[idx]; }
+
+	// precondition: !empty()
+	reference front() { return (*this)[0]; }
+	const_reference front() const { return (*this)[0]; }
+	reference back() { return (*this)[m_size - 1]; }
+	const_reference back() const { return (*this)[m_size - 1]; }
+
+	const T &at(std::size_t index) const {
+		if (index < 0 || index >= m_size)
+			throw std::out_of_range("Array index out of bounds!");
+
+		return m_data[index];
+	}
+
+	void shrink_to_fit() {
+
+		raw_ptr mem = allocate_helper(m_size);
+
+		// Copy/move the Ts from the old storage to new storage
+		if constexpr (std::is_nothrow_move_constructible_v<T>) {
+			std::uninitialized_move(m_data, m_data + m_size, mem.get());
+		} else {
+			std::uninitialized_copy(m_data, m_data + m_size, mem.get());
+		}
+
+		// Destroy objects in old storage and deallocate memory
+		for (auto p{m_data}; p < m_data + m_size; ++p) {
+			std::destroy_at<T>(p);
+		}
+		// Deallocate memory
+		pointer new_ptr = mem.release();
+		mem.reset(m_data);
+
+		// Reassign internal buffer pointer and set size and capacity
+		m_data = new_ptr;
+		m_capacity = m_size;
+	}
+
 	void pop_back() {
-		std::destroy_at(std::prev(end()).get());
+		T *ptr_to_last = m_data + m_size - 1;
+		std::destroy_at(ptr_to_last);
 		--m_size;
 	}
 
-	/**
-	 * @brief Construct an element in-place at the end of the
-	 * vector, using constructor args.
-	 */
-	template <typename... Args> reference emplace_back(Args &&...args) {
-		if (full())
-			grow();
-
-		std::construct_at(end().get(), std::forward<Args>(args)...);
-		++m_size;
-		return back();
-	}
-
-	/**
-	 * @brief Resize the container to contain %new_size elements.
-	 * - If count == current size, do nothing.
-	 * - If count < size(), the container is reduced to the first
-	 * count elements
-	 * - If count > size(), additional default contructed elements of
-	 * T() are appended. If count > capacity, reallocation is triggered.
-	 * https://en.cppreference.com/w/cpp/container/vector/resize
-	 */
-	void resize(size_type new_size) {
-		size_t current_size = size();
-		if (new_size == current_size)
-			return;
-
-		if (new_size < current_size) {
-			std::destroy(begin() + new_size, end());
-			m_size = new_size;
-			return;
-		}
-
-		if (new_size > capacity())
-			reserve(new_size);
-
-		// Default construct elements at indices
-		// [current_size,...,new_size-1]
-		for (auto p{begin() + current_size}; p != begin() + new_size; ++p)
-			std::construct_at(p.get(), value_type{});
-
-		m_size = new_size;
-	}
-
-	/**
-	 * @brief Inserts given %value into vector before specified %position,
-	 * possibly using move-semantics.
-	 * Note that this kind of operation could be expensive for a vector
-	 * and if it is frequently used, it can trigger reallocation.
-	 * The user should consider using std::list.
-	 */
-	template <typename U>
-	requires std::is_convertible_v<U, T>
-	    iterator insert(const_iterator position, U &&value) {
-		// If a reallocation is triggered, all iterators are
-		// invalidated and additionally `value` would also become a
-		// dangling reference, if it refers to an existing element of
-		// the vector.
-		size_type index = std::distance(begin(), iterator(position));
-		auto pos_ = iterator(position);
-
-		if (full()) {
-			size_t new_capacity = m_capacity ? 2 * m_capacity : 16;
-			auto ptr_new_blk = allocate_aux(new_capacity);
-
-			try {
-				construct_at_addr(ptr_new_blk + index,
-				                  std::forward<U>(value));
-			} catch (std::exception &ex) {
-				::operator delete(ptr_new_blk);
-				throw ex;
-			}
-
-			// Copy/move elements from m_data[0..index-1] to
-			// ptr_new_blk[0..index-1]
-			auto p1{begin()};
-			size_t i{0};
-
-			try {
-				for (; p1 != begin() + index; ++p1, ++i) {
-					construct_at_addr(ptr_new_blk + i,
-					                  std::forward<U>(*p1));
-				}
-			} catch (std::exception &ex) {
-				auto q{iterator(ptr_new_blk)};
-				std::destroy(q, q + i);
-				std::destroy_at(q.m_ptr + index);
-				::operator delete(ptr_new_blk);
-				throw ex; // rethrow
-			}
-
-			// Copy/move elements from m_data[index...] to
-			// ptr_new_blk[index+1...]
-			auto p2{begin() + index};
-			size_t j{index + 1};
-
-			try {
-				for (; p2 != end(); ++p2, ++j) {
-					construct_at_addr(ptr_new_blk + j,
-					                  std::forward<U>(*p2));
-				}
-			} catch (std::exception &ex) {
-				auto q{ptr_new_blk};
-				std::destroy(q, q + j);
-				::operator delete(ptr_new_blk);
-				throw ex;
-			}
-
-			destroy_aux(begin(), end(), m_elements);
-
-			m_elements = ptr_new_blk;
-			m_capacity = new_capacity;
-			pos_ = begin() + index;
-		} else {
-			if constexpr (std::is_nothrow_move_constructible_v<T>) {
-				std::uninitialized_move(end() - 1, end(), end());
-				std::move_backward(pos_, end(), end());
-				*pos_ = std::forward<U>(value);
-			} else {
-				std::uninitialized_copy(end() - 1, end(), end());
-				std::copy_backward(pos_, end(), end());
-				*pos_ = value;
-			}
-		}
-		++m_size;
-		return pos_;
-	}
-
-	/**
-	 * @brief Inserts a range into the vector.
-	 *
-	 * This function inserts copies of the elements from the range `[first,
-	 * last)` into the vector before the location specified by `position`.
-	 * If the range cannot fit into the remaining capacity, a reallocation
-	 * is triggered.
-	 *
-	 * @tparam InputIt The type of the input iterator. Must satisfy the
-	 * requirements of `std::input_iterator`.
-	 * @param position The position before which the elements will be
-	 * inserted.
-	 * @param first The beginning of the range to insert.
-	 * @param last The end of the range to insert.
-	 * @return An iterator pointing to the first of the newly inserted
-	 * elements.
-	 *
-	 * @note If reallocation occurs, all iterators, references, and
-	 * pointers to elements in the vector are invalidated.
-	 *
-	 * @throws std::bad_alloc If memory allocation fails during
-	 * reallocation.
-	 * @throws Any exception thrown by the copy c'tor of the element type
-	 * T.
-	 */
-	template <class InputIt>
-	iterator insert(const_iterator position, InputIt first, InputIt last) {
-		auto index = std::distance(begin(), iterator(position));
-
-		// Algorithm.
-		// ----------
-		// 1. Determine if the elements in the range [first,last) can
-		//    fit into the remaining_capacity = capacity() - size().
-		//    If not, a reallocation is triggered.
-
-		// Possible reallocation
-		if (std::distance(first, last) > capacity() - size()) {
-			size_t new_capacity = size() + std::distance(first, last);
-			reserve(new_capacity);
-		}
-
-		iterator pos_ = begin() + index;
-
-		//             num_elems_to_shift
-		// 2.            |<--------->|                             capacity
-		//   begin()     position    end()                               |
-		//    ===========================================================
-		//   |42 |5  |17 |28 |63 |55 |   |   |   |   |   |   |   |   |   |
-		//    ===========================================================
-		//                           ^-----------------------------------^
-		//                                       Raw Storage
-
-		size_t src_len = std::distance(first, last);
-		size_t num_elems_to_shift = std::distance(pos_, end());
-		iterator d_first = pos_ + src_len;
-		iterator d_last = end() + src_len;
-
-		if (src_len >= num_elems_to_shift) {
-			// a) If 3 or more elements have to be inserted at pos_,
-			//  then the range [position,end) has to be copied
-			//  to raw storage.
-			std::uninitialized_copy(pos_, end(), d_first);
-		} else {
-			// b) If less than 3 elements have to be inserted at pos_,
-			// then
-			//   => a subsequence [end() - src_len, end()) has to be
-			//   copied
-			//      to raw storage.
-			//   => the subsequence [pos_,end() - src_len) has to be
-			//   copied
-			//      to initialized storage.
-			std::uninitialized_copy(end() - src_len,
-			                        end(),
-			                        d_last - src_len);
-			std::copy_backward(pos_, end() - src_len, end());
-		}
-
-		// 3. Copy elements from src to dest range.
-		if (src_len <= num_elems_to_shift) {
-			// a) Copy the elements from the source range to
-			// [pos_,pos+src_len)
-			std::copy(first, last, pos_);
-
-		} else {
-			// b) (i) Copy the elements from
-			//     the subsequence [first,first + num_elems_to_shift)
-			//     to [pos_,end())
-			std::copy(first, first + num_elems_to_shift, pos_);
-
-			// (ii) Copy the elements from
-			// [first+num_elems_to_shift,last)
-			//      to uninitialized storage [end(),pos_ + src_len)
-			std::uninitialized_copy(first + num_elems_to_shift,
-			                        last,
-			                        end());
-		}
-
-		m_size += src_len;
-		return pos_;
-	}
-
-	/**
-	 * @brief Inserts elements from the initializer_list @a ilist before
-	 * @a position.
-	 */
-	iterator insert(const_iterator position,
-	                std::initializer_list<T> ilist) {
-		return insert(position, ilist.begin(), ilist.end());
-	}
-
-	// TODO: Add an implementation of insert(const_iterator position,
-	// InputIt first, InputIt last) which handles the special case where
-	// [first,last) are a subrange in %this vector.
-
-	template <typename It>
-	requires(std::is_same_v<It, iterator> ||
-	         std::is_same_v<It, const_iterator>) iterator
-	    erase(It position) {
-		auto pos_ = iterator(position.get());
-		if (pos_ == end())
-			return pos_;
-
-		std::copy(std::next(pos_), end(), pos_);
-		std::destroy_at(std::prev(end()).get());
-		--m_size;
-		return pos_;
+	bool operator==(const vector &other) const {
+		return size() == other.size() &&
+		       std::equal(begin(), end(), other.begin());
 	}
 
 	void reserve(size_type new_capacity) {
 		if (new_capacity <= capacity())
 			return;
 
-		auto ptr_new_blk = allocate_aux(new_capacity);
+		raw_ptr mem = allocate_helper(new_capacity);
+		copy_old_storage_to_new(m_data, m_size, mem.get()); // can throw
 
-		copy_old_storage_to_new(ptr_new_blk);
-
-		std::destroy(begin(), end());
-		::operator delete(m_elements);
-		m_elements = ptr_new_blk;
+		std::destroy(m_data, m_data + m_size);
+		pointer new_ptr = mem.release();
+		mem.reset(m_data);
+		m_data = new_ptr;
 		m_capacity = new_capacity;
 	}
+
+	void resize(size_type new_size) {
+		size_type current_size = m_size;
+		if (new_size == current_size)
+			return;
+
+		if (new_size < current_size) {
+			// Reduce the container to count elements
+			std::destroy(m_data + new_size, m_data + m_size);
+		}
+
+		if (new_size > current_size) {
+			reserve(new_size);
+
+			// Default construct elements at indicates
+			// [current_size,...,new_size-1]
+			std::uninitialized_value_construct(begin() + current_size,
+			                                   begin() + new_size);
+		}
+		m_size = new_size;
+	}
+
+	template <typename... Args> reference emplace_back(Args &&...args) {
+		if (is_full())
+			return emplace_back_slow_path(std::forward<Args>(args)...);
+		else
+			return emplace_back_fast_path(std::forward<Args>(args)...);
+	}
+
+	template <typename It>
+	iterator insert(const_iterator pos, It first, It last) {
+		auto pos_ = const_cast<iterator>(pos);
+		auto first_ = first;
+		auto last_ = last;
+
+		if (first != last) {
+			size_type offset = std::distance(begin(), pos_);
+			size_type n = std::distance(first, last);
+			size_type num_elems_to_shift = std::distance(pos_, end());
+			size_type remaining_capacity = capacity() - size();
+
+			dev::vector<T> temp;
+			// handle self-referential insertion
+			if ((first_ >= begin() && first_ < end()) && last_ > begin() &&
+			    last_ <= end()) {
+				for (auto it{first_}; it != last_; ++it)
+					temp.push_back(*it);
+
+				first_ = temp.begin();
+				last_ = temp.end();
+			}
+
+			if (n > remaining_capacity) {
+				size_type excess_capacity_reqd =
+				    std::max(n - remaining_capacity, 0uz);
+				reserve(capacity() + excess_capacity_reqd);
+				// The iterator pos is invalidated. Update it.
+				pos_ = std::next(begin(), offset);
+			}
+
+			// objects to displace (move or copy) from the
+			// [begin, end()] sequence into raw uninitialized
+			// memory
+			if (n < num_elems_to_shift) {
+				if constexpr (std::is_nothrow_move_constructible_v<T>) {
+					std::uninitialized_move(end() - n, end(), end());
+				} else {
+					std::uninitialized_copy(end() - n, end(), end());
+				}
+
+			} else {
+				size_type num_tail = std::max(n - num_elems_to_shift, 0uz);
+				if constexpr (std::is_nothrow_move_constructible_v<T>) {
+					std::uninitialized_move(pos_, end(), end() + num_tail);
+				} else {
+					std::uninitialized_copy(pos_, end(), end() + num_tail);
+				}
+			}
+
+			// objects to displace (copy or move) from [pos,end()]
+			// to the end of the container
+			if (n < num_elems_to_shift) {
+				if constexpr (std::is_nothrow_move_constructible_v<T>) {
+					std::move_backward(pos_, end() - n, end());
+				} else {
+					std::copy_backward(pos_, end() - n, end());
+				}
+			}
+
+			// objects from [first,last) to insert into raw
+			// uninitialized memory
+			const size_type num_tail =
+			    std::max(n - num_elems_to_shift, 0uz);
+			if (n >= num_elems_to_shift) {
+				if constexpr (std::is_nothrow_move_constructible_v<T>) {
+					std::uninitialized_move(last_ - num_tail,
+					                        last_,
+					                        end());
+				} else {
+					std::uninitialized_copy(last_ - num_tail,
+					                        last_,
+					                        end());
+				}
+			}
+
+			// objects to copy from [first,last) to pos
+			if (n < num_elems_to_shift) {
+				std::copy(first_, last_, pos_);
+			} else {
+				std::copy(first_, first_ + n - num_tail, pos_);
+			}
+
+			m_size += n;
+		}
+		return pos_;
+	}
 };
-
-// static_assert(std::contiguous_iterator<Iterator<int>>);
-// static_assert(std::contiguous_iterator<Iterator<const int>>);
-
 } // namespace dev
