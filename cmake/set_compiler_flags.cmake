@@ -7,7 +7,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -v -w -std=c++23")
     # -g3 Builds the binaries with debugging symbols
     # -O0 No optimization, faster compile time
-    set(CMAKE_CXX_FLAGS_DEBUG "{CMAKE_CXX_FLAGS_DEBUG} -g3 -O0") 
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -O0") 
 endif()
 
 set(GCC_ROOT "$ENV{GCC_ROOT}" CACHE STRING "gcc root directory")
