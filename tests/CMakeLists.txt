@@ -13,13 +13,23 @@ fetchcontent_declare(googletest
 
 fetchcontent_makeavailable(googletest)
 
-file(GLOB_RECURSE TESTS_SOURCES 
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+
+message("TESTS_ROOT : ${TESTS_ROOT}")
+
+set(TESTS_HEADERS 
+    ""
 )
 
-file(GLOB_RECURSE TESTS_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
+set(TESTS_SOURCES
+    "${TESTS_ROOT}/forward_list_test/forward_list_test.cpp"
+    "${TESTS_ROOT}/shared_ptr_test/shared_ptr_test.cpp"
+    "${TESTS_ROOT}/spsc_queue_test/spsc_queue_test.cpp"
+    "${TESTS_ROOT}/string_test/string_test.cpp"
+    "${TESTS_ROOT}/threadsafe_queue_test/threadsafe_queue_test.cpp"
+    "${TESTS_ROOT}/threadsafe_stack_test/threadsafe_stack_test.cpp"
+    "${TESTS_ROOT}/unique_ptr_test/unique_ptr_test.cpp"
+    "${TESTS_ROOT}/variant_test/variant_test.cpp"
+    "${TESTS_ROOT}/vector_test/vector_test.cpp"
 )
 
 add_executable(cppx_tests)
