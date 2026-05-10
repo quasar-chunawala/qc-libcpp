@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)     # Error, if the compiler doesn't support
 include(FetchContent)
 
 fetchcontent_declare(googletest
-    GIT_REPOSITORY 
+GIT_REPOSITORY
         https://github.com/google/googletest.git
     GIT_TAG main
 )
@@ -16,7 +16,7 @@ fetchcontent_makeavailable(googletest)
 
 message("TESTS_ROOT : ${TESTS_ROOT}")
 
-set(TESTS_HEADERS 
+set(TESTS_HEADERS
     ""
 )
 
@@ -35,7 +35,7 @@ set(TESTS_SOURCES
 add_executable(cppx_tests)
 
 target_sources(cppx_tests
-    PRIVATE 
+    PRIVATE
         ${TESTS_SOURCES}
         ${TESTS_HEADERS}
 )
@@ -48,3 +48,4 @@ target_link_libraries(cppx_tests
 
 include(GoogleTest)
 gtest_discover_tests(cppx_tests)
+

@@ -1,17 +1,27 @@
----
 AllowShortLoopsOnASingleLine: false
 AllowShortEnumsOnASingleLine: true
-Standard: c++17
+AlignArrayOfStructures: Left
+AlignOperands: true
+AlignTrailingComments: Always
+Standard: Latest
 TabWidth: 4
 UseTab: ForIndentation
 IndentWidth: 4
+IndentAccessModifiers: false
+AccessModifierOffset: -4
 IndentCaseBlocks: true
 IndentCaseLabels: true
+IndentRequiresClause: false
+NamespaceIndentation: All
+Language: Cpp
 SortIncludes:
   Enabled: true
-SpaceAfterOperatorKeyword: false
 SpaceAfterTemplateKeyword: true
 ColumnLimit: 75
 BinPackArguments: false
-AllowAllArgumentsOnNextLine: false
+AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortFunctionsOnASingleLine: InlineOnly
+AllowShortLambdasOnASingleLine: Inline
+FixNamespaceComments: true
+IncludeBlocks: Preserve
