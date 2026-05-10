@@ -1,0 +1,122 @@
+Analyzing build trace from 'capture.bin'...
+**** Time summary:
+Compilation (1 times):
+  Parsing (frontend):           14.2 s
+  Codegen & opts (backend):      2.1 s
+
+**** Files that took longest to parse (compiler frontend):
+ 14207 ms: ./variant_v1.json
+
+**** Files that took longest to codegen (compiler backend):
+  2081 ms: ./variant_v1.json
+
+**** Templates that took longest to instantiate:
+  8107 ms: dev::variant<signed char, short, int, long, unsigned char, unsigned ... (1 times, avg 8107 ms)
+  8105 ms: dev::variant<signed char, short, int, long, unsigned char, unsigned ... (1 times, avg 8105 ms)
+   224 ms: std::vformat_to<std::__format::_Sink_iter<char>> (1 times, avg 224 ms)
+   224 ms: std::__format::__do_vformat_to<std::__format::_Sink_iter<char>, char... (1 times, avg 224 ms)
+   222 ms: std::__format::__do_vformat_to<char, 1U> (1 times, avg 222 ms)
+   177 ms: std::vformat_to<std::__format::_Sink_iter<wchar_t>> (1 times, avg 177 ms)
+   177 ms: std::__format::__do_vformat_to<std::__format::_Sink_iter<wchar_t>, w... (1 times, avg 177 ms)
+   176 ms: std::__format::__do_vformat_to<wchar_t, 1U> (1 times, avg 176 ms)
+   141 ms: dev::tools::destroy_at<199UL, signed char, short, int, long, unsigne... (1 times, avg 141 ms)
+   138 ms: dev::tools::get<199UL, dev::tools::union_<signed char, short, int, l... (1 times, avg 138 ms)
+   137 ms: dev::tools::get<198UL, dev::tools::union_<short, int, long, unsigned... (1 times, avg 137 ms)
+   137 ms: dev::tools::get<197UL, dev::tools::union_<int, long, unsigned char, ... (1 times, avg 137 ms)
+   136 ms: dev::tools::get<196UL, dev::tools::union_<long, unsigned char, unsig... (1 times, avg 136 ms)
+   135 ms: dev::tools::get<195UL, dev::tools::union_<unsigned char, unsigned sh... (1 times, avg 135 ms)
+   134 ms: dev::tools::get<194UL, dev::tools::union_<unsigned short, unsigned i... (1 times, avg 134 ms)
+   133 ms: dev::tools::get<193UL, dev::tools::union_<unsigned int, unsigned lon... (1 times, avg 133 ms)
+   132 ms: dev::tools::get<192UL, dev::tools::union_<unsigned long, float, doub... (1 times, avg 132 ms)
+   131 ms: dev::tools::get<191UL, dev::tools::union_<float, double, long double... (1 times, avg 131 ms)
+   131 ms: dev::tools::get<190UL, dev::tools::union_<double, long double, char,... (1 times, avg 131 ms)
+   130 ms: dev::tools::get<189UL, dev::tools::union_<long double, char, unsigne... (1 times, avg 130 ms)
+   129 ms: dev::tools::get<188UL, dev::tools::union_<char, unsigned char, signe... (1 times, avg 129 ms)
+   128 ms: dev::tools::get<187UL, dev::tools::union_<unsigned char, signed char... (1 times, avg 128 ms)
+   127 ms: dev::tools::get<186UL, dev::tools::union_<signed char, wchar_t, bool... (1 times, avg 127 ms)
+   126 ms: dev::tools::get<185UL, dev::tools::union_<wchar_t, bool, std::basic_... (1 times, avg 126 ms)
+   126 ms: dev::tools::get<184UL, dev::tools::union_<bool, std::basic_string<ch... (1 times, avg 126 ms)
+   125 ms: dev::tools::get<183UL, dev::tools::union_<std::basic_string<char>, s... (1 times, avg 125 ms)
+   124 ms: dev::tools::get<182UL, dev::tools::union_<std::basic_string<wchar_t>... (1 times, avg 124 ms)
+   123 ms: dev::tools::get<181UL, dev::tools::union_<std::vector<int>, std::vec... (1 times, avg 123 ms)
+   122 ms: dev::tools::get<180UL, dev::tools::union_<std::vector<double>, std::... (1 times, avg 122 ms)
+   121 ms: dev::tools::get<179UL, dev::tools::union_<std::list<int>, std::deque... (1 times, avg 121 ms)
+
+**** Template sets that took longest to instantiate:
+  8107 ms: dev::variant<$>::~variant (1 times, avg 8107 ms)
+  8105 ms: dev::variant<signed char, short, int, long, unsigned char, unsigned ... (1 times, avg 8105 ms)
+  8062 ms: dev::tools::destroy_at<$> (199 times, avg 40 ms)
+  7843 ms: dev::tools::get<$> (198 times, avg 39 ms)
+   402 ms: std::vformat_to<$> (2 times, avg 201 ms)
+   401 ms: std::__format::__do_vformat_to<$> (2 times, avg 200 ms)
+   289 ms: std::formatter<$>::format<$> (24 times, avg 12 ms)
+   153 ms: std::__format::__formatter_int<$>::format<$> (16 times, avg 9 ms)
+   110 ms: std::__format::__formatter_str<$>::format<$> (2 times, avg 55 ms)
+    94 ms: std::span<$> (5 times, avg 18 ms)
+    90 ms: std::__format::__formatter_int<$>::_M_format_int<$> (2 times, avg 45 ms)
+    86 ms: std::__format::__write_padded<$> (2 times, avg 43 ms)
+    81 ms: std::__format::__formatter_str<$>::_M_format_escaped<$> (2 times, avg 40 ms)
+    79 ms: std::__format::_Padding_sink<$>::_M_finish (2 times, avg 39 ms)
+    67 ms: std::distance<$> (9 times, avg 7 ms)
+    66 ms: std::__format::_Formatting_scanner<$> (2 times, avg 33 ms)
+    64 ms: dev::variant<$> (1 times, avg 64 ms)
+    64 ms: dev::tools::union_<$> (1 times, avg 64 ms)
+    64 ms: dev::tools::union_<$>::(anonymous union at ./v1/../utilities.h:174:4) (1 times, avg 64 ms)
+    63 ms: std::__format::__visit_format_arg<$> (5 times, avg 12 ms)
+    63 ms: std::basic_format_arg<$>::_M_visit<$> (5 times, avg 12 ms)
+    60 ms: std::__format::_Padding_sink<$>::_M_force_update (2 times, avg 30 ms)
+    58 ms: std::__format::_Formatting_scanner<$>::_M_format_arg (2 times, avg 29 ms)
+    56 ms: std::__format::_Spec<$>::_M_parse_fill_and_align (2 times, avg 28 ms)
+    49 ms: std::reverse_iterator<$> (7 times, avg 7 ms)
+    45 ms: std::__format::__formatter_int<$>::_M_parse<$> (2 times, avg 22 ms)
+    44 ms: std::__format::__formatter_int<$>::_M_do_parse (2 times, avg 22 ms)
+    44 ms: std::__format::_Seq_sink<$>::view (2 times, avg 22 ms)
+    44 ms: std::__format::_Seq_sink<$>::_M_span (2 times, avg 22 ms)
+    43 ms: std::__format::_Seq_sink<$> (2 times, avg 21 ms)
+
+**** Functions that took longest to compile:
+    12 ms: _ZZN3dev7variantIJasilhtjmfdechawbNSt7__cxx1112basic_stringIcSt11cha... (variant.cpp)
+     1 ms: test_variant_200_types() (variant.cpp)
+     0 ms: std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char... (variant.cpp)
+     0 ms: std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char... (variant.cpp)
+     0 ms: main (variant.cpp)
+     0 ms: std::_Rb_tree<int, int, std::_Identity<int>, std::less<int>, std::al... (variant.cpp)
+     0 ms: std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>::_M_release_last_u... (variant.cpp)
+     0 ms: std::_Rb_tree<int, std::pair<int const, int>, std::_Select1st<std::p... (variant.cpp)
+
+**** Function sets that took longest to compile / optimize:
+     2 ms: std::_Rb_tree<$>::_M_erase(std::_Rb_tree_node<$>*) (4 times, avg 0 ms)
+     0 ms: std::_Sp_counted_base<$>::_M_release_last_use_cold() (1 times, avg 0 ms)
+
+**** Expensive headers:
+667 ms: /usr/include/c++/16.1.1/chrono (included 1 times, avg 667 ms), included via:
+  1x: <direct include>
+
+148 ms: /usr/include/c++/16.1.1/bitset (included 1 times, avg 148 ms), included via:
+  1x: <direct include>
+
+82 ms: /usr/include/c++/16.1.1/filesystem (included 1 times, avg 82 ms), included via:
+  1x: <direct include>
+
+63 ms: /usr/include/c++/16.1.1/array (included 1 times, avg 63 ms), included via:
+  1x: <direct include>
+
+59 ms: /usr/include/c++/16.1.1/complex (included 1 times, avg 59 ms), included via:
+  1x: <direct include>
+
+26 ms: /usr/include/c++/16.1.1/memory (included 1 times, avg 26 ms), included via:
+  1x: <direct include>
+
+20 ms: /usr/include/c++/16.1.1/map (included 1 times, avg 20 ms), included via:
+  1x: <direct include>
+
+12 ms: /usr/include/c++/16.1.1/deque (included 1 times, avg 12 ms), included via:
+  1x: <direct include>
+
+11 ms: /usr/include/c++/16.1.1/variant (included 1 times, avg 11 ms), included via:
+  1x: <direct include>
+
+9 ms: /usr/include/c++/16.1.1/list (included 1 times, avg 9 ms), included via:
+  1x: <direct include>
+
+  done in 0.1s.

@@ -1,4 +1,7 @@
 #include "../utilities.h"
+#include <cstddef>
+#include <type_traits>
+#include <utility>
 
 // variant definition using constexpr-time
 // array of function pointers approach
@@ -20,6 +23,35 @@ namespace dev {
 
 		tools::union_<Ts...> m_data;
 		index_type m_idx;
+
+		/**
+		 * @brief Helper routine that applies the @param func to
+		 * the currently held alternative. Internally uses a table of
+		 * function pointers generated at compile time.
+		 *
+		 * @tparam Func
+		 * @param func
+		 * @return decltype(auto)
+		 */
+		template <typename Func> decltype(auto) apply_helper(Func func) {
+			auto wrapper = [this, &func](std::size_t idx) {
+				constexpr auto seq =
+				    std::make_index_sequence<sizeof...(Ts)>();
+				return [&]<std::size_t... Indices>(
+				           std::index_sequence<Indices...>) {
+					using result_t =
+					    decltype(func(tools::get_nth_type_t<0, Ts...>()));
+					using case_ = result_t (*)(Func);
+					constexpr case_ cases[] = {[](Func &func_) {
+						return func_(
+						    tools::get_nth_type_t<Indices, Ts...>());
+					}...};
+					return cases[idx](func);
+				}(seq);
+			};
+
+			return wrapper(m_idx);
+		}
 
 	public:
 		/**
