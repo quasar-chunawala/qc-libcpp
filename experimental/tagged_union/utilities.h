@@ -214,16 +214,56 @@ namespace dev {
 
 namespace dev {
 	namespace tools {
-		template <std::size_t i, typename Self>
-		constexpr auto &&get(Self &&self)
-		requires instance_of<std::remove_cvref_t<Self>, union_> &&
-		         (i < union_size_v<std::remove_cvref_t<Self>>)
-		{
-			if constexpr (i == 0)
-				return TOOLS_FWD(self).head;
-			else
-				return get<i - 1>(TOOLS_FWD(self).tail);
-		}
+		namespace v1 {
+			/**
+			 * @brief Gets the nth element using the naive recursion
+			 * approach.
+			 *
+			 * @tparam i
+			 * @tparam Self
+			 */
+			template <std::size_t i, typename Self>
+			constexpr auto &&get(Self &&self)
+			requires instance_of<std::remove_cvref_t<Self>, union_> &&
+			         (i < union_size_v<std::remove_cvref_t<Self>>)
+			{
+				if constexpr (i == 0)
+					return TOOLS_FWD(self).head;
+				else
+					return get<i - 1>(TOOLS_FWD(self).tail);
+			}
+		} // namespace v1
+
+		namespace v2 {
+			// A second implementation technique consists in using
+			// multiple inheriance and CTAD to trick the compiler to
+			// deducing the nth element of a parameter pack for us.
+
+			template <std::size_t I, typename T> struct indexed {
+				using type = T;
+			};
+
+			template <typename Is, typename... Ts> struct indexer;
+
+			template <std::size_t... Is, typename... Ts>
+			struct indexer<std::index_sequence<Is...>, Ts...>
+			    : indexed<Is, Ts>... {};
+
+			template <std::size_t I, typename T>
+			static indexed<I, T> select(indexed<I, T>);
+
+			template <size_t I, typename... Ts>
+			using nth_element_type = typename decltype(select<I>(
+			    indexer<std::index_sequence_for<Ts...>, Ts...>{}))::type;
+
+			template <std::size_t I, typename... Ts>
+			constexpr nth_element_type<I, Ts...> &
+			get(const union_<Ts...> &self) {
+				return *(nth_element_type<I, Ts...> *)(&self);
+			}
+		} // namespace v2
+
+		using v2::get;
 	} // namespace tools
 } // namespace dev
 
