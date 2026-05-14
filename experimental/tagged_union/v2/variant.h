@@ -24,35 +24,6 @@ namespace dev {
 		tools::union_<Ts...> m_data;
 		index_type m_idx;
 
-		/**
-		 * @brief Helper routine that applies the @param func to
-		 * the currently held alternative. Internally uses a table of
-		 * function pointers generated at compile time.
-		 *
-		 * @tparam Func
-		 * @param func
-		 * @return decltype(auto)
-		 */
-		template <typename Func> decltype(auto) apply_helper(Func func) {
-			auto wrapper = [this, &func](std::size_t idx) {
-				constexpr auto seq =
-				    std::make_index_sequence<sizeof...(Ts)>();
-				return [&]<std::size_t... Indices>(
-				           std::index_sequence<Indices...>) {
-					using result_t =
-					    decltype(func(tools::get_nth_type_t<0, Ts...>()));
-					using case_ = result_t (*)(Func);
-					constexpr case_ cases[] = {[](Func &func_) {
-						return func_(
-						    tools::get_nth_type_t<Indices, Ts...>());
-					}...};
-					return cases[idx](func);
-				}(seq);
-			};
-
-			return wrapper(m_idx);
-		}
-
 	public:
 		/**
 		 * @brief: Constructs a variant holding the zero-initialized value
@@ -128,7 +99,7 @@ namespace dev {
 		void swap(variant<Ts...> &other) noexcept {
 			using std::swap;
 			if (m_idx == other.m_idx) {
-				// swap(get<m_idx>(*this), tools::get<m_idx>(other));
+
 				return [&]<size_t... Idxs>(std::index_sequence<Idxs...>) {
 					(((m_idx == Idxs)
 					      ? (swap(get<Idxs>(*this), get<Idxs>(other)), 0)
@@ -175,21 +146,14 @@ namespace dev {
 		 * @brief Destructor. Destroys the currently held alternative.
 		 */
 		constexpr ~variant() {
-			auto wrapper = [this](std::size_t idx) {
-				constexpr auto idx_seq =
-				    std::make_index_sequence<sizeof...(Ts)>();
-				return [&]<std::size_t... Indices>(
-				           std::index_sequence<Indices...>) {
-					using destructor_fn = void (*)(variant<Ts...> &);
+			using destructor_fn = void (*)(tools::union_<Ts...> &);
+			static constexpr destructor_fn cases[]{
+			    [](tools::union_<Ts...> &self) {
+				    tools::destroy_at<tools::make_indexer<Ts>::index>(
+				        self);
+			    }...};
 
-					constexpr destructor_fn cases[]{[](variant<Ts...> &v) {
-						tools::destroy_at<Indices>(v.m_data);
-					}...};
-					return cases[idx](*this);
-				}(idx_seq);
-			};
-
-			wrapper(m_idx);
+			cases[m_idx](m_data);
 		}
 
 		/**

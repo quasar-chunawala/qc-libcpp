@@ -257,9 +257,18 @@ namespace dev {
 			    indexer<std::index_sequence_for<Ts...>, Ts...>{}))::type;
 
 			template <std::size_t I, typename... Ts>
-			constexpr nth_element_type<I, Ts...> &
+			constexpr const nth_element_type<I, Ts...> &
 			get(const union_<Ts...> &self) {
-				return *(nth_element_type<I, Ts...> *)(&self);
+				return *(
+				    reinterpret_cast<const nth_element_type<I, Ts...> *>(
+				        &self));
+			}
+
+			template <std::size_t I, typename... Ts>
+			constexpr nth_element_type<I, Ts...> &
+			get(union_<Ts...> &self) {
+				return *(
+				    reinterpret_cast<nth_element_type<I, Ts...> *>(&self));
 			}
 		} // namespace v2
 
@@ -281,5 +290,28 @@ namespace dev {
 			// std::destroy_at(<address>)
 			std::destroy_at(&get<i>(self));
 		}
+	} // namespace tools
+} // namespace dev
+
+namespace dev {
+	namespace tools {
+		template <size_t I, typename T> struct indexed {
+			using type = T;
+			static constexpr size_t index = I;
+		};
+
+		template <size_t I, typename T>
+		using indexed_v = indexed<I, T>::index;
+
+		template <typename Is, typename... Ts> struct indexer {};
+
+		template <size_t... Is, typename... Ts>
+		struct indexer<std::index_sequence<Is...>, Ts...>
+		    : indexed<Is, Ts>... {};
+
+		template <typename... Ts>
+		using make_indexer =
+		    indexer<std::index_sequence_for<Ts...>, Ts...>;
+
 	} // namespace tools
 } // namespace dev
