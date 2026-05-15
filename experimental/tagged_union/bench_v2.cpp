@@ -1,24 +1,10 @@
-#include <array>
-#include <bitset>
-#include <chrono>
-#include <complex>
 #include <cstddef>
 #include <cstdint>
-#include <deque>
-#include <filesystem>
-#include <iostream>
-#include <list>
-#include <map>
-#include <memory>
-#include <optional>
-#include <set>
 #include <string>
-#include <string_view>
-#include <system_error>
-#include <variant>
+
 #include <vector>
 
-#include "v1/variant.h"
+#include "v2/variant.h"
 
 void test_variant_20_types() {
 	// holds alternative 10: long double
@@ -49,5 +35,4 @@ void test_variant_20_types() {
 int main() {
 	for (size_t i{0uz}; i < 10'000'000; ++i)
 		test_variant_20_types();
-	std::cout << "All tests passed.\n";
 }
