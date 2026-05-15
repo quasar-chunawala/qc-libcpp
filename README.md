@@ -1,2 +1,2 @@
-# cppx
-**cppx** is a collection of data-structures, lock-free and wait-free algorithms written in modern C++ and used in quantitative trading and finance.
+# qc-libcpp
+**qc-libcpp** is a collection of data-structures and design patterns written in modern C++ and used in quantitative trading and finance.
