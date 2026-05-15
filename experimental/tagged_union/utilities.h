@@ -1,4 +1,3 @@
-#include <initializer_list>
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -89,43 +88,77 @@ static_assert(
 
 namespace dev {
 	namespace tools {
-		namespace type_lists {
-			template <
-			    size_t n, typename T0 = void, typename T1 = void,
-			    typename T2 = void, typename T3 = void, typename T4 = void,
-			    typename T5 = void, typename T6 = void, typename T7 = void,
-			    typename T8 = void, typename T9 = void, typename... Ts>
-			constexpr auto get_nth_type_impl() {
-				/**/ if constexpr (n == 0)
-					return std::type_identity<T0>{};
-				else if constexpr (n == 1)
-					return std::type_identity<T1>{};
-				else if constexpr (n == 2)
-					return std::type_identity<T2>{};
-				else if constexpr (n == 3)
-					return std::type_identity<T3>{};
-				else if constexpr (n == 4)
-					return std::type_identity<T4>{};
-				else if constexpr (n == 5)
-					return std::type_identity<T5>{};
-				else if constexpr (n == 6)
-					return std::type_identity<T6>{};
-				else if constexpr (n == 7)
-					return std::type_identity<T7>{};
-				else if constexpr (n == 8)
-					return std::type_identity<T8>{};
-				else if constexpr (n == 9)
-					return std::type_identity<T9>{};
-				else
-					return get_nth_type_impl<n - 10, Ts...>();
-			}
-		} // namespace type_lists
+		// Recursive approach
+		namespace nth_element_type::v1 {
+			namespace type_lists {
+				template <size_t n, typename T0 = void, typename T1 = void,
+				          typename T2 = void, typename T3 = void,
+				          typename T4 = void, typename T5 = void,
+				          typename T6 = void, typename T7 = void,
+				          typename T8 = void, typename T9 = void,
+				          typename... Ts>
+				constexpr auto get_nth_type_impl() {
+					/**/ if constexpr (n == 0)
+						return std::type_identity<T0>{};
+					else if constexpr (n == 1)
+						return std::type_identity<T1>{};
+					else if constexpr (n == 2)
+						return std::type_identity<T2>{};
+					else if constexpr (n == 3)
+						return std::type_identity<T3>{};
+					else if constexpr (n == 4)
+						return std::type_identity<T4>{};
+					else if constexpr (n == 5)
+						return std::type_identity<T5>{};
+					else if constexpr (n == 6)
+						return std::type_identity<T6>{};
+					else if constexpr (n == 7)
+						return std::type_identity<T7>{};
+					else if constexpr (n == 8)
+						return std::type_identity<T8>{};
+					else if constexpr (n == 9)
+						return std::type_identity<T9>{};
+					else
+						return get_nth_type_impl<n - 10, Ts...>();
+				}
+			} // namespace type_lists
+
+		} // namespace nth_element_type::v1
+
+		// Multiple inheritance trick
+		namespace nth_element_type::v2 {
+			template <size_t I, typename T> struct indexed {
+				using type = T;
+				static constexpr size_t index = I;
+			};
+
+			template <size_t I, typename T>
+			using indexed_v = indexed<I, T>::index;
+
+			template <typename Is, typename... Ts> struct indexer {};
+
+			template <size_t... Is, typename... Ts>
+			struct indexer<std::index_sequence<Is...>, Ts...>
+			    : indexed<Is, Ts>... {};
+
+			// a static function
+			template <size_t I, typename T>
+			static indexed<I, T> select(indexed<I, T>);
+
+			template <size_t I, typename... Ts>
+			using get_nth_type_impl = typename decltype(select<I>(
+			    indexer<std::index_sequence_for<Ts...>, Ts...>()))::type;
+
+		} // namespace nth_element_type::v2
+
+		// the void* trick
+		namespace nth_element_type::v3 {}
 
 		template <size_t n, typename... Ts>
 		requires(n < sizeof...(Ts))
 		using get_nth_type_t =
-		    typename decltype(type_lists::get_nth_type_impl<
-		                      n, Ts...>())::type;
+		    nth_element_type::v2::get_nth_type_impl<n, Ts...>;
+
 	} // namespace tools
 
 } // namespace dev

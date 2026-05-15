@@ -30,6 +30,7 @@
 *.exe
 *.out
 *.app
+*.bin
 
 CMakeLists.txt.user
 CMakeCache.txt
@@ -50,6 +51,7 @@ tasks.json
 
 # Folders
 coverage_report
+experimental/tagged_union/traces/
 
 # VSCode settings
 .vscode/
