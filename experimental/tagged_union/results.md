@@ -1,5 +1,5 @@
 | Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
 |:---|---:|---:|---:|---:|
-| `if-conditionals (v1)` | 28.6 ± 1.5 | 25.3 | 31.9 | 30.24 ± 8.84 |
-| `function pointer table (v2)` | 0.9 ± 0.3 | 0.6 | 1.8 | 1.00 |
-| `stdlib variant` | 1.0 ± 0.2 | 0.7 | 1.8 | 1.04 ± 0.40 |
+| `if-conditionals (v1)` | 28.3 ± 1.6 | 25.6 | 31.5 | 32.42 ± 8.68 |
+| `function pointer table (v2)` | 0.9 ± 0.3 | 0.5 | 1.9 | 1.02 ± 0.42 |
+| `stdlib variant` | 0.9 ± 0.2 | 0.5 | 1.8 | 1.00 |

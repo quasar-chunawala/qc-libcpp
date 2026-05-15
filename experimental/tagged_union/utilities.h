@@ -152,7 +152,26 @@ namespace dev {
 		} // namespace nth_element_type::v2
 
 		// the void* trick
-		namespace nth_element_type::v3 {}
+		namespace nth_element_type::v3 {
+			template <size_t n, typename = std::make_index_sequence<n>>
+			struct nth_type_impl;
+
+			template <size_t n, size_t... ns>
+			struct nth_type_impl<n, std::index_sequence<ns...>> {
+				template <typename Tn>
+				static Tn f(decltype((void *)ns)..., Tn *, void *...);
+			};
+
+			template <size_t n, typename... Ts>
+			using nth_type_wrapper = decltype(nth_type_impl<n>::f(
+			    (static_cast<Ts *>(nullptr))...));
+		} // namespace nth_element_type::v3
+
+		// The compiler intrinsic __nth_element
+		// namespace nth_element_type::v4 {
+		// 	template <size_t n, typename... Ts>
+		// 	using get_nth_type_impl = __nth_element<n, Ts...>;
+		// }
 
 		template <size_t n, typename... Ts>
 		requires(n < sizeof...(Ts))
