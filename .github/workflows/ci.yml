@@ -161,6 +161,32 @@ jobs:
         if: matrix.os == 'windows' && contains(matrix.preset, 'clang')
         run: choco install llvm  --version=20.0.0 --yes
 
+      - name: Set up MSVC environment (Windows)
+        if: matrix.os == 'windows' && contains(matrix.preset, 'msvc')
+        shell: powershell
+        run: |
+          # Find vswhere
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          
+          # Find the VS installation path
+          $vsPath = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          
+          # Run vcvarsall.bat and capture the environment
+          $vcvarsall = "$vsPath\VC\Auxiliary\Build\vcvarsall.bat"
+          $envVars = cmd /c "`"$vcvarsall`" x64 && set"
+          
+          # Write each variable into the GitHub Actions environment
+          foreach ($line in $envVars) {
+            if ($line -match "^([^=]+)=(.*)$") {
+              $name  = $matches[1]
+              $value = $matches[2]
+              # Skip variables that cmd sets internally
+              if ($name -notin @("_", "CMDCMDLINE", "PROMPT")) {
+                echo "$name=$value" >> $env:GITHUB_ENV
+              }
+            }
+          }        
+
       # --- macOS: install Ninja (compilers are pre-installed) ---
       - name: Install dependencies (macOS)
         if: matrix.os == 'macos'
