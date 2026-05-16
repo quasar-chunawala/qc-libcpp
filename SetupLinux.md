@@ -1,9 +1,11 @@
 # Setup
 
+## Recommended VS Code Setup
+
 I recommend creating `.vscode/extensions.json` file under the worktree. The below VS Code extensions are really useful:
 
 ### `.vscode/extensions.json`
-```
+```json
 {
     "recommendations": [
         "llvm-vs-code-extensions.vscode-clangd",
@@ -18,5 +20,40 @@ I recommend creating `.vscode/extensions.json` file under the worktree. The belo
         "waderyan.gitblame",
         "xaver.clang-format"
     ]
+}
+```
+
+### `.vscoe/settings.json`
+
+```json
+{
+    "editor.formatOnSave": true,  
+    "[cpp]": {
+        "editor.wordBasedSuggestions": "off",
+        "editor.semanticHighlighting.enabled": true,
+        "editor.stickyScroll.defaultModel": "foldingProviderModel",
+        "editor.suggest.insertMode": "replace",
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
+    "cmake.useCMakePresets": "always",
+    "cmake.ctest.testExplorerIntegrationEnabled": true,
+    "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
+    "clangd.arguments": [
+        "--compile-commands-dir=${workspaceFolder}"
+    ],
+    "cmake.statusbar.advanced": {
+        "configure": {
+            "visibility": "visible"
+        },
+        "build": {
+            "visibility": "visible"
+        },
+        "buildTarget": {
+            "visibility": "visible"
+        },
+        "test": {
+            "visibility": "visible"
+        }
+    }
 }
 ```
