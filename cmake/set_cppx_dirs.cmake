@@ -1,3 +1,0 @@
-cmake_path(SET CPPX_ROOT "${CMAKE_CURRENT_LIST_DIR}/..")
-set(CPPX_CORE_ROOT "${CPPX_ROOT}/core")
-set(TESTS_ROOT "${CPPX_ROOT}/tests")

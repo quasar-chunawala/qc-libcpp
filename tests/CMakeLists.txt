@@ -14,38 +14,38 @@ GIT_REPOSITORY
 fetchcontent_makeavailable(googletest)
 
 
-message("TESTS_ROOT : ${TESTS_ROOT}")
+message("LIBCPP_TESTS_ROOT : ${LIBCPP_TESTS_ROOT}")
 
-set(TESTS_HEADERS
+set(LIBCPP_TESTS_HEADERS
     ""
 )
 
-set(TESTS_SOURCES
-    "${TESTS_ROOT}/forward_list_test/forward_list_test.cpp"
-    "${TESTS_ROOT}/shared_ptr_test/shared_ptr_test.cpp"
-    "${TESTS_ROOT}/spsc_queue_test/spsc_queue_test.cpp"
-    "${TESTS_ROOT}/string_test/string_test.cpp"
-    "${TESTS_ROOT}/threadsafe_queue_test/threadsafe_queue_test.cpp"
-    "${TESTS_ROOT}/threadsafe_stack_test/threadsafe_stack_test.cpp"
-    "${TESTS_ROOT}/unique_ptr_test/unique_ptr_test.cpp"
-    "${TESTS_ROOT}/variant_test/variant_test.cpp"
-    "${TESTS_ROOT}/vector_test/vector_test.cpp"
+set(LIBCPP_TESTS_SOURCES
+    "${LIBCPP_TESTS_ROOT}/forward_list_test/forward_list_test.cpp"
+    "${LIBCPP_TESTS_ROOT}/shared_ptr_test/shared_ptr_test.cpp"
+    "${LIBCPP_TESTS_ROOT}/spsc_queue_test/spsc_queue_test.cpp"
+    "${LIBCPP_TESTS_ROOT}/string_test/string_test.cpp"
+    "${LIBCPP_TESTS_ROOT}/threadsafe_queue_test/threadsafe_queue_test.cpp"
+    "${LIBCPP_TESTS_ROOT}/threadsafe_stack_test/threadsafe_stack_test.cpp"
+    "${LIBCPP_TESTS_ROOT}/unique_ptr_test/unique_ptr_test.cpp"
+    "${LIBCPP_TESTS_ROOT}/variant_test/variant_test.cpp"
+    "${LIBCPP_TESTS_ROOT}/vector_test/vector_test.cpp"
 )
 
-add_executable(cppx_tests)
+add_executable(libcpp_tests)
 
-target_sources(cppx_tests
+target_sources(libcpp_tests
     PRIVATE
-        ${TESTS_SOURCES}
-        ${TESTS_HEADERS}
+        ${LIBCPP_TESTS_SOURCES}
+        ${LIBCPP_TESTS_HEADERS}
 )
 
-target_link_libraries(cppx_tests
+target_link_libraries(libcpp_tests
     PRIVATE
         core
         GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(cppx_tests)
+gtest_discover_tests(libcpp_tests)
 

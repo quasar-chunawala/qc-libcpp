@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 4.0)
 
-project(cppx VERSION 1.0)
+project(qc_libcpp VERSION 1.0)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-include(set_cppx_dirs)
+include(set_libcpp_dirs)
 include(set_compiler_flags)
 
 # #################################################################
