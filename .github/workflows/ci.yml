@@ -135,22 +135,7 @@ jobs:
         if: matrix.os == 'ubuntu'
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build g++ wget
-
-      - name: Install Clang 20 (Ubuntu)
-        if: matrix.os == 'ubuntu' && contains(matrix.preset, 'clang')
-        run: |
-          # Download the official LLVM install script
-          wget https://apt.llvm.org/llvm.sh
-
-          # Make it executable
-          chmod +x llvm.sh
-
-          # Run it with '20' to add the LLVM apt repo and install clang-20
-          sudo ./llvm.sh 20
-
-          # Make clang++-20 available as clang++
-          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-20 100          
+          sudo apt-get install -y cmake ninja-build g++ wget clang
 
       # --- Windows: install Ninja (MSVC is pre-installed, clang via choco) ---
       - name: Install dependencies (Windows)
