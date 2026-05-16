@@ -1,5 +1,13 @@
 # Setup
 
+## Dependencies
+
+On ArchLinux:
+
+```
+sudo pacman -Syu base-devel cmake ninja clang llvm clang-tools-extra llvm19 polly gdb lldb ccache valgrind git code
+```
+
 ## Recommended VS Code Setup
 
 I recommend creating `.vscode/extensions.json` file under the worktree. The below VS Code extensions are really useful:
@@ -50,3 +58,18 @@ I recommend creating `.vscode/extensions.json` file under the worktree. The belo
     "cmake.options.statusBarVisibility": "visible"
 }
 ```
+
+## Configure and Build
+
+There are various configuration presets defined in `/CMakePresets.json`. You can choose from `clang-debug`, `clang-release`, `gcc-debug`, `gcc-release` and `msvc`. To configure:
+
+```
+cmake --preset <preset-name>
+```
+
+Various build presets are defined: `clang-debug`, `clang-release`, `gcc-debug`, `gcc-release` and `msvc-debug` and `msvc-release`.
+
+```
+cmake --build --preset <preset-name>
+```
+
