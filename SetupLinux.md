@@ -61,13 +61,13 @@ I recommend creating `.vscode/extensions.json` file under the worktree. The belo
 
 ## Configure and Build
 
-There are various configuration presets defined in `/CMakePresets.json`. You can choose from `clang-debug`, `clang-release`, `gcc-debug`, `gcc-release` and `msvc`. To configure:
+There are various configuration presets defined in `/CMakePresets.json`. To configure:
 
 ```
 cmake --preset <preset-name>
 ```
 
-Various build presets are defined: `clang-debug`, `clang-release`, `gcc-debug`, `gcc-release` and `msvc-debug` and `msvc-release`.
+Various build presets are defined in `/CMakePresets.json`.
 
 ```
 cmake --build --preset <preset-name>
