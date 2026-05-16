@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.3...4.0)
 
 project(qc_libcpp VERSION 1.0)
 
