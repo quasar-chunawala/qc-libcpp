@@ -1,101 +1,272 @@
 {
-    "version": 11,
-    "cmakeMinimumRequired": {
-        "major": 4,
-        "minor": 0
-    },
+    "version": 6,
     "configurePresets": [
         {
-            "name": "config-base",
+            "name": "config-base-debug",
             "hidden": true,
-            "displayName": "config-base",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build/${presetName}"
-        },
-        {
-            "name": "config-debug",
-            "hidden": true,
-            "inherits": "config-base",
+            "binaryDir": "${sourceDir}/build/${presetName}",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"
             }
         },
         {
-            "name": "config-release",
+            "name": "config-base-release",
             "hidden": true,
-            "inherits": "config-base",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
-            "name": "clang-debug",
-            "inherits": "config-debug",
-            "displayName": "clang-debug",
+            "name": "linux-gcc-x64-release",
+            "inherits": "config-base-release",
             "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "clang++"
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_SYSTEM_PROCESSOR": "x86_64"
             }
         },
         {
-            "name": "clang-release",
-            "inherits": "config-release",
-            "displayName": "clang-release",
+            "name": "linux-gcc-arm64-release",
+            "inherits": "config-base-release",
             "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "clang++"
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_SYSTEM_PROCESSOR": "aarch64"
             }
         },
         {
-            "name": "gcc-debug",
-            "inherits": "config-debug",
-            "displayName": "gcc-debug",
+            "name": "linux-clang-x64-release",
+            "inherits": "config-base-release",
             "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "g++"
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_SYSTEM_PROCESSOR": "x86_64"
             }
         },
         {
-            "name": "gcc-release",
-            "inherits": "config-release",
-            "displayName": "gcc-release",
+            "name": "linux-clang-arm64-release",
+            "inherits": "config-base-release",
             "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "g++"
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_SYSTEM_PROCESSOR": "aarch64"
             }
         },
         {
-            "name": "msvc",
-            "inherits": "config-base",
-            "displayName": "msvc",
+            "name": "windows-msvc-x64-release",
             "generator": "Visual Studio 17 2022",
+            "architecture": "x64",
+            "binaryDir": "${sourceDir}/build/${presetName}",
             "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "cl"
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "windows-clang-x64-release",
+            "inherits": "config-base-release",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_SYSTEM_PROCESSOR": "x86_64"
+            }
+        },
+        {
+            "name": "macos-appleclang-arm64-release",
+            "inherits": "config-base-release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_SYSTEM_PROCESSOR": "arm64",
+                "CMAKE_OSX_ARCHITECTURES": "arm64"
+            }
+        },
+        {
+            "name": "macos-appleclang-x64-release",
+            "inherits": "config-base-release",
+            "cacheVariables": {
+                "CMAKE_SYSTEM_PROCESSOR": "x86_64",
+                "CMAKE_OSX_ARCHITECTURES": "x86_64"
+            }
+        },
+        {
+            "name": "macos-clang-arm64-release",
+            "inherits": "config-base-release",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_SYSTEM_PROCESSOR": "arm64",
+                "CMAKE_OSX_ARCHITECTURES": "arm64"
+            }
+        },
+        {
+            "name": "macos-clang-x64-release",
+            "inherits": "config-base-release",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_SYSTEM_PROCESSOR": "x86_64",
+                "CMAKE_OSX_ARCHITECTURES": "x86_64"
+            }
+        },
+        {
+            "name": "linux-gcc-x64-debug",
+            "inherits": "config-base-debug",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_SYSTEM_PROCESSOR": "x86_64"
+            }
+        },
+        {
+            "name": "linux-gcc-arm64-debug",
+            "inherits": "config-base-debug",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_SYSTEM_PROCESSOR": "aarch64"
+            }
+        },
+        {
+            "name": "linux-clang-x64-debug",
+            "inherits": "config-base-debug",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_SYSTEM_PROCESSOR": "x86_64"
+            }
+        },
+        {
+            "name": "linux-clang-arm64-debug",
+            "inherits": "config-base-debug",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_SYSTEM_PROCESSOR": "aarch64"
+            }
+        },
+        {
+            "name": "windows-msvc-x64-debug",
+            "generator": "Visual Studio 17 2022",
+            "architecture": "x64",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "windows-clang-x64-debug",
+            "inherits": "config-base-debug",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_SYSTEM_PROCESSOR": "x86_64"
+            }
+        },
+        {
+            "name": "macos-appleclang-arm64-debug",
+            "inherits": "config-base-debug",
+            "cacheVariables": {
+                "CMAKE_SYSTEM_PROCESSOR": "arm64",
+                "CMAKE_OSX_ARCHITECTURES": "arm64"
+            }
+        },
+        {
+            "name": "macos-appleclang-x64-debug",
+            "inherits": "config-base-debug",
+            "cacheVariables": {
+                "CMAKE_SYSTEM_PROCESSOR": "x86_64",
+                "CMAKE_OSX_ARCHITECTURES": "x86_64"
+            }
+        },
+        {
+            "name": "macos-clang-arm64-debug",
+            "inherits": "config-base-debug",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_SYSTEM_PROCESSOR": "arm64",
+                "CMAKE_OSX_ARCHITECTURES": "arm64"
+            }
+        },
+        {
+            "name": "macos-clang-x64-debug",
+            "inherits": "config-base-debug",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_SYSTEM_PROCESSOR": "x86_64",
+                "CMAKE_OSX_ARCHITECTURES": "x86_64"
             }
         }
     ],
     "buildPresets": [
         {
-            "name": "clang-debug",
-            "configurePreset": "clang-debug"
+            "name": "linux-gcc-x64-release",
+            "configurePreset": "linux-gcc-x64-release"
         },
         {
-            "name": "clang-release",
-            "configurePreset": "clang-release"
+            "name": "linux-gcc-arm64-release",
+            "configurePreset": "linux-gcc-arm64-release"
         },
         {
-            "name": "gcc-debug",
-            "configurePreset": "gcc-debug"
+            "name": "linux-clang-x64-release",
+            "configurePreset": "linux-clang-x64-release"
         },
         {
-            "name": "gcc-release",
-            "configurePreset": "gcc-release"
+            "name": "linux-clang-arm64-release",
+            "configurePreset": "linux-clang-arm64-release"
         },
         {
-            "name": "msvc-debug",
-            "configurePreset": "msvc",
-            "configuration": "configure-debug"
+            "name": "windows-msvc-x64-release",
+            "configurePreset": "windows-msvc-x64-release"
         },
         {
-            "name": "msvc-release",
-            "configurePreset": "msvc",
-            "configuration": "configure-release"
+            "name": "windows-clang-x64-release",
+            "configurePreset": "windows-clang-x64-release"
+        },
+        {
+            "name": "macos-appleclang-arm64-release",
+            "configurePreset": "macos-appleclang-arm64-release"
+        },
+        {
+            "name": "macos-appleclang-x64-release",
+            "configurePreset": "macos-appleclang-x64-release"
+        },
+        {
+            "name": "macos-clang-arm64-release",
+            "configurePreset": "macos-clang-arm64-release"
+        },
+        {
+            "name": "macos-clang-x64-release",
+            "configurePreset": "macos-clang-x64-release"
+        },
+        {
+            "name": "linux-gcc-x64-debug",
+            "configurePreset": "linux-gcc-x64-debug"
+        },
+        {
+            "name": "linux-gcc-arm64-debug",
+            "configurePreset": "linux-gcc-arm64-debug"
+        },
+        {
+            "name": "linux-clang-x64-debug",
+            "configurePreset": "linux-clang-x64-debug"
+        },
+        {
+            "name": "linux-clang-arm64-debug",
+            "configurePreset": "linux-clang-arm64-debug"
+        },
+        {
+            "name": "windows-msvc-x64-debug",
+            "configurePreset": "windows-msvc-x64-debug"
+        },
+        {
+            "name": "windows-clang-x64-debug",
+            "configurePreset": "windows-clang-x64-debug"
+        },
+        {
+            "name": "macos-appleclang-arm64-debug",
+            "configurePreset": "macos-appleclang-arm64-debug"
+        },
+        {
+            "name": "macos-appleclang-x64-debug",
+            "configurePreset": "macos-appleclang-x64-debug"
+        },
+        {
+            "name": "macos-clang-arm64-debug",
+            "configurePreset": "macos-clang-arm64-debug"
+        },
+        {
+            "name": "macos-clang-x64-debug",
+            "configurePreset": "macos-clang-x64-debug"
         }
     ]
 }
