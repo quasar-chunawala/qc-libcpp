@@ -27,7 +27,13 @@ I recommend creating `.vscode/extensions.json` file under the worktree. The belo
 
 ```json
 {
-    "editor.formatOnSave": true,  
+    "editor.formatOnSave": true,
+    "[cmake]": {
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
     "[cpp]": {
         "editor.wordBasedSuggestions": "off",
         "editor.semanticHighlighting.enabled": true,
@@ -41,19 +47,5 @@ I recommend creating `.vscode/extensions.json` file under the worktree. The belo
     "clangd.arguments": [
         "--compile-commands-dir=${workspaceFolder}"
     ],
-    "cmake.statusbar.advanced": {
-        "configure": {
-            "visibility": "visible"
-        },
-        "build": {
-            "visibility": "visible"
-        },
-        "buildTarget": {
-            "visibility": "visible"
-        },
-        "test": {
-            "visibility": "visible"
-        }
-    }
 }
 ```
