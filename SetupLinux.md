@@ -47,5 +47,6 @@ I recommend creating `.vscode/extensions.json` file under the worktree. The belo
     "clangd.arguments": [
         "--compile-commands-dir=${workspaceFolder}"
     ],
+    "cmake.options.statusBarVisibility": "visible"
 }
 ```
