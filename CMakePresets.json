@@ -53,11 +53,12 @@
         },
         {
             "name": "windows-msvc-x64-release",
-            "generator": "Visual Studio 17 2022",
+            "inherits": "config-base-release",
             "architecture": "x64",
             "binaryDir": "${sourceDir}/build/${presetName}",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+                "CMAKE_CXX_COMPILER": "cl",
+                "CMAKE_SYSTEM_PROCESSOR": "x86_64"
             }
         },
         {
@@ -137,11 +138,10 @@
         },
         {
             "name": "windows-msvc-x64-debug",
-            "generator": "Visual Studio 17 2022",
-            "architecture": "x64",
-            "binaryDir": "${sourceDir}/build/${presetName}",
+            "inherits": "config-base-debug",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
+                "CMAKE_CXX_COMPILER": "cl",
+                "CMAKE_SYSTEM_PROCESSOR": "x86_64"
             }
         },
         {
