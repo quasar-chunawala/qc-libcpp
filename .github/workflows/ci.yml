@@ -135,21 +135,44 @@ jobs:
         if: matrix.os == 'ubuntu'
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build g++ clang
+          sudo apt-get install -y cmake ninja-build g++ wget
+
+      - name: Install Clang 20 (Ubuntu)
+        if: matrix.os == 'ubuntu' && contains(matrix.preset, 'clang')
+        run: |
+          # Download the official LLVM install script
+          wget https://apt.llvm.org/llvm.sh
+
+          # Make it executable
+          chmod +x llvm.sh
+
+          # Run it with '20' to add the LLVM apt repo and install clang-20
+          sudo ./llvm.sh 20
+
+          # Make clang++-20 available as clang++
+          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-20 100          
 
       # --- Windows: install Ninja (MSVC is pre-installed, clang via choco) ---
       - name: Install dependencies (Windows)
         if: matrix.os == 'windows'
         run: choco install ninja --yes
 
-      - name: Install clang (Windows)
+      - name: Install clang 20 (Windows)
         if: matrix.os == 'windows' && contains(matrix.preset, 'clang')
-        run: choco install llvm --yes
+        run: choco install llvm  --version=20.0.0 --yes
 
       # --- macOS: install Ninja (compilers are pre-installed) ---
       - name: Install dependencies (macOS)
         if: matrix.os == 'macos'
         run: brew install ninja cmake
+
+      - name: Install Clang 20 (macOS)
+        if: matrix.os == 'macos' && contains(matrix.preset, 'macos-clang')
+        run: |
+          brew install llvm@20
+
+          # Put Homebrew's clang++ ahead of Apple's on the PATH
+          echo "$(brew --prefix llvm@20)/bin" >> $GITHUB_PATH
 
       - name: Configure
         run: cmake --preset ${{ matrix.preset }}
