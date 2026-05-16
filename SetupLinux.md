@@ -23,7 +23,7 @@ I recommend creating `.vscode/extensions.json` file under the worktree. The belo
 }
 ```
 
-### `.vscoe/settings.json`
+### `.vscode/settings.json`
 
 ```json
 {
