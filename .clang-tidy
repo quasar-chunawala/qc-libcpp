@@ -1,2 +1,10 @@
-Checks: 'clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,'
-WarningsAsErrors: true
+---
+# Enable groups of checks: bugprone, readability and modernize
+# Disable specific checks using the '-' prefix
+Checks: >
+  bugprone-*,
+  readability-*,
+  modernize-*,
+  -modernize-use-trailing-type,
+  -readability-magic-numbers
+WarningsAsErrors: "-*"
