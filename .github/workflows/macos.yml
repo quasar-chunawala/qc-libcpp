@@ -1,0 +1,29 @@
+name: macOS build
+on: [push, pull_request]
+
+jobs:
+    build:
+        strategy:
+            matrix:
+                os:
+                    - 14
+                    - 15
+                    - 15-intel
+        runs-on: macos-${{ matrix.os }}
+        name: 'macos-${{ matrix.os }}'
+        steps:
+        - name: Checkout
+          uses: actions/checkout@v6
+
+        - name: Configure
+          run: |
+            cmake -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_CXX_FLAGS="-std=c++20 -Wall -Wpedantic" \
+            -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+
+        - name: Build
+          run: |
+            cmake --build build --verbose
+            
+
