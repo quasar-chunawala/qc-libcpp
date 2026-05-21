@@ -15,7 +15,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON) # Full C++26 support is needed
 
 
 option(ENABLE_CLANG_TIDY "" OFF)
-set(ENABLE_CLANG_TIDY ON)
+# set(ENABLE_CLANG_TIDY ON)
 
 # #################################################################
 # Project components
