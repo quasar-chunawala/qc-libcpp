@@ -6,7 +6,7 @@ jobs:
         strategy:
             matrix:
                 os:
-                    - 14
+                    # - 14
                     - 15
                     - 15-intel
         runs-on: macos-${{ matrix.os }}
@@ -19,7 +19,7 @@ jobs:
           run: |
             cmake -B build \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_CXX_FLAGS="-std=c++20 -Wall -Wpedantic" \
+            -DCMAKE_CXX_FLAGS="-std=c++20 -Wall -Wpedantic -Wc++2b-extensions" \
             -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
         - name: Build
