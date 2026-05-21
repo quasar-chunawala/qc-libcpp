@@ -11,12 +11,10 @@ jobs:
         strategy:
             matrix:
                 sys:
-                    - { compiler: 'gcc', version: '11', flags: '-std=c++20 -Wall -Wpedantic'} 
                     - { compiler: 'gcc', version: '12', flags: '-std=c++20 -Wall -Wpedantic'}        
                     - { compiler: 'gcc', version: '13', flags: '-std=c++20 -Wall -Wpedantic'}
                     - { compiler: 'gcc', version: '14', flags: '-std=c++20 -Wall -Wpedantic'} 
                     - { compiler: 'gcc', version: '15', flags: '-std=c++20 -Wall -Wpedantic'}
-                    - { compiler: 'gcc', version: '16', flags: '-std=c++20 -Wall -Wpedantic'}
                     - { compiler: 'clang', version: '16', flags: '-std=c++20 -Wall -Wpedantic'} 
                     - { compiler: 'clang', version: '17', flags: '-std=c++20 -Wall -Wpedantic'}        
                     - { compiler: 'clang', version: '18', flags: '-std=c++20 -Wall -Wpedantic'}
@@ -29,9 +27,9 @@ jobs:
           if: ${{ matrix.sys.compiler == 'gcc' }}
           run: |
             GCC_VERSION=${{ matrix.sys.version }}
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
             sudo apt-get update
             sudo apt-get --no-install-suggests --no-install-recommends install g++-$GCC_VERSION
-            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
             sudo apt-get update
             echo "CXX=g++-$GCC_VERSION" >> $GITHUB_ENV
 
