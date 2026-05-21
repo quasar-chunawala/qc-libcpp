@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.3...4.0)
 
-set(CMAKE_CXX_STANDARD 23)              # C++ standard
+set(CMAKE_CXX_STANDARD 20)              # C++ standard
 set(CMAKE_CXX_STANDARD_REQUIRED ON)     # Error, if the compiler doesn't support it
 
 include(FetchContent)
