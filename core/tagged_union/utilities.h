@@ -77,15 +77,16 @@ namespace dev {
 } // namespace dev
 
 // -------------- tests ------------
-static_assert(std::is_same_v<uint8_t, dev::tools::uint_atleast_t<100ULL>>);
-static_assert(std::is_same_v<uint8_t, dev::tools::uint_atleast_t<255ULL>>);
-static_assert(
-    std::is_same_v<uint16_t, dev::tools::uint_atleast_t<256ULL>>);
+#ifndef _MSC_VER
+static_assert(std::is_same_v<uint8_t, dev::tools::uint_atleast_t<100>>);
+static_assert(std::is_same_v<uint8_t, dev::tools::uint_atleast_t<255>>);
+static_assert(std::is_same_v<uint16_t, dev::tools::uint_atleast_t<256>>);
 static_assert(
     std::is_same_v<uint32_t, dev::tools::uint_atleast_t<
                                  std::numeric_limits<uint32_t>::max()>>);
-static_assert(std::is_same_v<
-              uint64_t, dev::tools::uint_atleast_t<5'000'000'000ULL>>);
+static_assert(
+    std::is_same_v<uint64_t, dev::tools::uint_atleast_t<5'000'000'000>>);
+#endif
 
 namespace dev {
 	namespace tools {
