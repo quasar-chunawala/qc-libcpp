@@ -9,4 +9,4 @@
 
 - For MacOS, refer [SetupMacOS.md](./SetupMacOS.md)
 
-[![Linux x86 build](https://github.com/quasar-chunawala/qc-libcpp/actions/workflows/linux.yml/badge.svg)](https://github.com/quasar-chunawala/qc-libcpp/actions/workflows/linux.yml) [![macOS build](https://github.com/quasar-chunawala/qc-libcpp/actions/workflows/macos.yml/badge.svg)](https://github.com/quasar-chunawala/qc-libcpp/actions/workflows/macos.yml)
+[![Linux x86 build](https://github.com/quasar-chunawala/qc-libcpp/actions/workflows/linux.yml/badge.svg)](https://github.com/quasar-chunawala/qc-libcpp/actions/workflows/linux.yml) [![macOS build](https://github.com/quasar-chunawala/qc-libcpp/actions/workflows/macos.yml/badge.svg)](https://github.com/quasar-chunawala/qc-libcpp/actions/workflows/macos.yml) [![C++ compatibility build](https://github.com/quasar-chunawala/qc-libcpp/actions/workflows/cxx-versions.yml/badge.svg)](https://github.com/quasar-chunawala/qc-libcpp/actions/workflows/cxx-versions.yml)
