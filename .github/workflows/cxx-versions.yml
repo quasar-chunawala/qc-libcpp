@@ -1,0 +1,16 @@
+name: C++ compatibility build
+on: [push, pull_request]
+
+jobs:
+  build-unix:
+    name: 'Unix C++${{ matrix.cxx-version }}'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cxx-version: [20, 23]
+    steps:
+    - uses: actions/checkout@v6
+    - name: Setup
+      run: cmake -B build/ -DBUILD_TESTS=ON -DDOWNLOAD_DOCTEST=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=${{matrix.cxx-version}}
+    - name: Build
+      run: cmake --build build/
