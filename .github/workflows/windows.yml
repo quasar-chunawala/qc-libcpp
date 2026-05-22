@@ -30,8 +30,9 @@ jobs:
       uses: actions/checkout@v6
 
     - name: Configure
-      run:  cmake -B build -G Ninja -DCMAKE_CXX_FLAGS="/W4 /permissive-" -DCMAKE_CXX_COMPILER=cl \
-            -DCMAKE_BUILD_TYPE=Release 
+      env:
+        MSYS_NO_PATHCONV: 1
+      run: cmake -B build -G Ninja -DCMAKE_CXX_COMPILER=cl -DCMAKE_BUILD_TYPE=Release "-DCMAKE_CXX_FLAGS=/W4 /permissive-"
 
     - name: Build
       run: cmake --build build
