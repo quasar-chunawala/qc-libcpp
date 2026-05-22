@@ -1,11 +1,12 @@
-#include <core/string/string.h>
-
 #include <algorithm>
 #include <cassert>
 #include <cstring>
 #include <iterator>
 #include <new>
 #include <utility>
+
+#include <core/compat.h>
+#include <core/string/string.h>
 
 namespace dev {
 
