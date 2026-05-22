@@ -146,8 +146,8 @@ namespace dev {
 				}
 
 				if (n > remaining_capacity) {
-					size_t excess_capacity_reqd =
-					    std::max(n - remaining_capacity, 0);
+					size_t excess_capacity_reqd = std::max(
+					    static_cast<int>(n - remaining_capacity), 0);
 					reserve(capacity() + excess_capacity_reqd);
 					pos_ = std::next(begin(), offset);
 				}

@@ -1,8 +1,11 @@
 #include <atomic>
+#include <chrono>
 #include <gtest/gtest.h>
 #include <thread>
 
 #include <core/smart_pointers/shared_ptr.h>
+
+using namespace std::chrono_literals;
 
 // make_shared<T>(constructor_args) test
 TEST(SharedPtrTest, MakeSharedTest) {

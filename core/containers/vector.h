@@ -334,8 +334,8 @@ namespace dev {
 				}
 
 				if (n > remaining_capacity) {
-					size_type excess_capacity_reqd =
-					    std::max(n - remaining_capacity, 0);
+					size_type excess_capacity_reqd = std::max(
+					    static_cast<int>(n - remaining_capacity), 0);
 					reserve(capacity() + excess_capacity_reqd);
 					// The iterator pos is invalidated. Update it.
 					pos_ = std::next(begin(), offset);
@@ -353,8 +353,8 @@ namespace dev {
 					}
 
 				} else {
-					size_type num_tail =
-					    std::max(n - num_elems_to_shift, 0);
+					size_type num_tail = std::max(
+					    static_cast<int>(n - num_elems_to_shift), 0);
 					if constexpr (std::is_nothrow_move_constructible_v<
 					                  T>) {
 						std::uninitialized_move(
@@ -379,7 +379,7 @@ namespace dev {
 				// objects from [first,last) to insert into raw
 				// uninitialized memory
 				const size_type num_tail =
-				    std::max(n - num_elems_to_shift, 0);
+				    std::max(static_cast<int>(n - num_elems_to_shift), 0);
 				if (n >= num_elems_to_shift) {
 					if constexpr (std::is_nothrow_move_constructible_v<
 					                  T>) {
