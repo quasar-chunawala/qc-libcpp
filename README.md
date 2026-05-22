@@ -8,3 +8,5 @@
 - For Win64, refer [SetupWin64.md](./SetupWin64.md).
 
 - For MacOS, refer [SetupMacOS.md](./SetupMacOS.md)
+
+[![Linux x86 build](https://github.com/quasar-chunawala/qc-libcpp/actions/workflows/linux.yml/badge.svg)](https://github.com/quasar-chunawala/qc-libcpp/actions/workflows/linux.yml)
