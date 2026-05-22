@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <core/compat.h>
 #include <core/containers/vector.h>
 
 struct copycounter {

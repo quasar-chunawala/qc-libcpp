@@ -6,8 +6,6 @@
 #include <initializer_list>
 #include <iterator>
 
-#include <core/compat.h>
-
 namespace dev {
 
 	struct string_long {
