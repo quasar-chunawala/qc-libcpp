@@ -3,7 +3,7 @@
 #include <core/containers/vector.h>
 
 struct copycounter {
-	static inline std::size_t copycount{0};
+	static inline std::size_t copycount{0uz};
 
 	copycounter() = default;
 	copycounter(const copycounter &) { ++copycount; }
@@ -71,7 +71,8 @@ TEST(VectorTest, ThrowDuringDefaultConstructionTest) {
 	ThrowOnValueConstruct::throw_after_ = 2;
 
 	EXPECT_THROW(
-	    { dev::vector<ThrowOnValueConstruct> v(5); }, std::runtime_error);
+	    { dev::vector<ThrowOnValueConstruct> v(5); },
+	    std::runtime_error);
 
 	EXPECT_EQ(ThrowOnValueConstruct::default_construct_count_, 2);
 	EXPECT_EQ(ThrowOnValueConstruct::deallocation_count, 2);
@@ -82,7 +83,7 @@ TEST(VectorTest, InitializerListTest) {
 	EXPECT_EQ(!v.empty(), true);
 	EXPECT_EQ(v.size(), 5);
 	EXPECT_TRUE(v.capacity() > 0);
-	for (size_t i{0}; i < v.size(); ++i) {
+	for (auto i{0uz}; i < v.size(); ++i) {
 		EXPECT_EQ(v.at(i), i + 1);
 	}
 }
@@ -109,7 +110,7 @@ TEST(VectorTest, ThrowDuringInitializerListCtorTest) {
 TEST(VectorTest, ParameterizedConstructorTest) {
 	dev::vector v(10, 5.5);
 	EXPECT_EQ(v.size(), 10);
-	for (size_t i{0}; i < v.size(); ++i) {
+	for (auto i{0uz}; i < v.size(); ++i) {
 		EXPECT_EQ(v[i], 5.5);
 	}
 }
@@ -151,7 +152,8 @@ TEST(VectorTest, ThrowDuringCopyConstructionTest) {
 	dev::vector<ThrowOnCopyConstruct> v1(5);
 
 	EXPECT_THROW(
-	    { dev::vector<ThrowOnCopyConstruct> v2(v1); }, std::runtime_error);
+	    { dev::vector<ThrowOnCopyConstruct> v2(v1); },
+	    std::runtime_error);
 
 	EXPECT_EQ(ThrowOnCopyConstruct::copy_construct_count_, 2);
 	EXPECT_EQ(ThrowOnCopyConstruct::deallocation_count, 2);
@@ -163,7 +165,7 @@ TEST(VectorTest, MoveConstructorTest) {
 	EXPECT_EQ(v1.size(), 0);
 	EXPECT_EQ(v1.capacity(), 0);
 	EXPECT_EQ(v2.size(), 3);
-	for (size_t i{0}; i < v2.size(); ++i)
+	for (auto i{0uz}; i < v2.size(); ++i)
 		EXPECT_EQ(v2[i], i + 1);
 }
 
@@ -204,7 +206,7 @@ TEST(VectorTest, AtTest) {
 
 TEST(VectorTest, SubscriptOperatorTest) {
 	dev::vector<int> v{1, 2, 3};
-	for (int i{0}; i < v.size(); ++i) {
+	for (int i{0uz}; i < v.size(); ++i) {
 		EXPECT_EQ(v[i], i + 1);
 	}
 }
@@ -251,7 +253,7 @@ TEST(VectorTest, ReserveTest) {
 	v2.reserve(new_capacity);
 	EXPECT_GE(v2.capacity(), new_capacity);
 	EXPECT_EQ(v2.size(), 7);
-	for (size_t i{0}; i < v2.size(); ++i)
+	for (auto i{0uz}; i < v2.size(); ++i)
 		EXPECT_EQ(v2[i], i + 1);
 }
 
@@ -260,7 +262,7 @@ TEST(VectorTest, ResizeTest) {
 	v.resize(5);
 
 	EXPECT_EQ(v.size(), 5);
-	for (size_t i{0}; i < 3; ++i)
+	for (auto i{0uz}; i < 3; ++i)
 		EXPECT_EQ(v[i], i + 1);
 
 	EXPECT_EQ(v[3], 0);
@@ -279,7 +281,7 @@ TEST(VectorTest, PushBackTest) {
 	v.push_back(3);
 
 	EXPECT_EQ(v.size(), 3);
-	for (size_t i{0}; i < v.size(); ++i)
+	for (auto i{0uz}; i < v.size(); ++i)
 		EXPECT_EQ(v[i], i + 1);
 }
 
@@ -292,7 +294,7 @@ TEST(VectorTest, PushBackSelfReferenceTest) {
 	// the vector itself e.g. vec.back()). This test is meant for such an
 	// edge case.
 	dev::vector<int> vec{1};
-	for (size_t i{0}; i < 64; ++i) {
+	for (auto i{0uz}; i < 64; ++i) {
 		vec.push_back(vec.back());
 		EXPECT_EQ(vec.back(), 1);
 	}
@@ -332,7 +334,7 @@ TEST(VectorTest, InsertAtBeginning) {
 	EXPECT_EQ(v.size(), 5uz);
 	EXPECT_EQ(it, v.begin());
 	dev::vector<int> result{10, 20, 1, 2, 3};
-	for (size_t i{0}; i < result.size(); ++i)
+	for (auto i{0uz}; i < result.size(); ++i)
 		EXPECT_EQ(v.at(i), result.at(i));
 }
 
@@ -381,7 +383,7 @@ TEST(VectorTest, InsertIntoEmptyVector) {
 TEST(VectorTest, InsertWithinCapacity) {
 	dev::vector<int> v;
 	v.reserve(10);
-	EXPECT_GE(v.capacity(), 10);
+	EXPECT_GE(v.capacity(), 10uz);
 	v.push_back(1);
 	v.push_back(2);
 	v.push_back(3);
@@ -390,7 +392,7 @@ TEST(VectorTest, InsertWithinCapacity) {
 	v.insert(v.begin() + 1, src.begin(), src.end());
 
 	EXPECT_EQ(v, (dev::vector<int>{1, 10, 20, 2, 3}));
-	EXPECT_GE(v.capacity(), 10);
+	EXPECT_GE(v.capacity(), 10uz);
 }
 
 TEST(VectorTest, InsertRequiresReallocation) {

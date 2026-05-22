@@ -56,10 +56,7 @@ TEST(VariantConvertingAssignment, AssignsAcrossTypes) {
 // ------------------- swap -----------------------------------
 
 TEST(VariantSwap, DifferentAlternatives) {
-	dev::variant<int, std::vector<int>> v1{
-	    2
-    },
-	    v2{std::vector{1, 2, 3, 4}};
+	dev::variant<int, std::vector<int>> v1{2}, v2{std::vector{1, 2, 3, 4}};
 	EXPECT_EQ(dev::get<0>(v1), 2);
 	EXPECT_EQ(dev::get<1>(v2), (std::vector<int>{1, 2, 3, 4}));
 	v1.swap(v2);
@@ -87,9 +84,7 @@ TEST(VariantCopyAssignment, SameIndex) {
 }
 
 TEST(VariantCopyAssignment, DifferentIndex) {
-	dev::variant<std::vector<int>, int> v1{
-	    std::vector{1, 2, 3, 4, 5}
-    },
+	dev::variant<std::vector<int>, int> v1{std::vector{1, 2, 3, 4, 5}},
 	    v2{42};
 	EXPECT_EQ(v1.index(), 0u);
 	EXPECT_EQ(v2.index(), 1u);
@@ -104,19 +99,17 @@ TEST(VariantMoveAssignment, SameIndex) {
 	dev::variant<std::vector<int>, std::string> v;
 	EXPECT_TRUE(dev::get<0>(v).empty());
 	dev::variant<std::vector<int>, std::string> w{
-	    std::vector{1, 2, 3, 4, 5}
-    };
+	    std::vector{1, 2, 3, 4, 5}};
 	v = std::move(w);
 	ASSERT_EQ(dev::get<0>(v).size(), 5u);
-	for (size_t i{0}; i < 5; ++i)
+	for (auto i{0uz}; i < 5; ++i)
 		EXPECT_EQ(dev::get<0>(v)[i], static_cast<int>(i + 1));
 	EXPECT_TRUE(dev::get<0>(w).empty()); // moved-from is empty
 }
 
 TEST(VariantMoveAssignment, DifferentIndex) {
 	dev::variant<std::vector<int>, std::string> v{
-	    std::vector{1, 2, 3, 4, 5}
-    };
+	    std::vector{1, 2, 3, 4, 5}};
 	EXPECT_EQ(v.index(), 0u);
 	dev::variant<std::vector<int>, std::string> w{std::string("hello")};
 	EXPECT_EQ(w.index(), 1u);
