@@ -113,7 +113,7 @@ void test_move_assignment_same_idx() {
 	v = std::move(w);
 	assert(!dev::get<0>(v).empty());
 	assert(dev::get<0>(v).size() == 5);
-	for (auto i{0uz}; i < 5; ++i)
+	for (size_t i{0}; i < 5; ++i)
 		assert(dev::get<0>(v)[i] == static_cast<int>(i + 1));
 	assert(dev::get<0>(w).empty());
 }

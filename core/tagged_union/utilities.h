@@ -8,7 +8,7 @@ namespace dev {
 		namespace type_lists {
 			template <typename T, typename... Ts>
 			constexpr size_t find_index_of_impl() {
-				size_t i{0uz};
+				size_t i{0};
 				for (bool is_same_type : {std::is_same_v<T, Ts>...}) {
 					if (is_same_type)
 						break;
@@ -165,7 +165,7 @@ namespace dev {
 			template <size_t n, typename... Ts>
 			using nth_type_wrapper = decltype(nth_type_impl<n>::f(
 			    (static_cast<Ts *>(nullptr))...));
-		} // namespace nth_element_type::v4
+		} // namespace nth_element_type::v3
 
 		// The compiler intrinsic __nth_element
 		// namespace nth_element_type::v4 {

@@ -98,7 +98,7 @@ namespace dev::tools {
 		};
 
 		static constexpr std::size_t to_linear_idx(multi_idx m_idx) {
-			std::size_t result{0uz};
+			std::size_t result{0};
 			multi_idx coeffs_ = coeffs();
 			result = std::inner_product(
 			    coeffs_.begin(), coeffs_.end(), m_idx.begin(), 0u);
