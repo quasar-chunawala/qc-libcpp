@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <core/compat.h>
 #include <core/containers/vector.h>
 
 struct copycounter {
@@ -71,8 +72,7 @@ TEST(VectorTest, ThrowDuringDefaultConstructionTest) {
 	ThrowOnValueConstruct::throw_after_ = 2;
 
 	EXPECT_THROW(
-	    { dev::vector<ThrowOnValueConstruct> v(5); },
-	    std::runtime_error);
+	    { dev::vector<ThrowOnValueConstruct> v(5); }, std::runtime_error);
 
 	EXPECT_EQ(ThrowOnValueConstruct::default_construct_count_, 2);
 	EXPECT_EQ(ThrowOnValueConstruct::deallocation_count, 2);
@@ -152,8 +152,7 @@ TEST(VectorTest, ThrowDuringCopyConstructionTest) {
 	dev::vector<ThrowOnCopyConstruct> v1(5);
 
 	EXPECT_THROW(
-	    { dev::vector<ThrowOnCopyConstruct> v2(v1); },
-	    std::runtime_error);
+	    { dev::vector<ThrowOnCopyConstruct> v2(v1); }, std::runtime_error);
 
 	EXPECT_EQ(ThrowOnCopyConstruct::copy_construct_count_, 2);
 	EXPECT_EQ(ThrowOnCopyConstruct::deallocation_count, 2);

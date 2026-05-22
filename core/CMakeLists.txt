@@ -8,6 +8,7 @@ set(CORE_SOURCES
 )
 
 set(CORE_HEADERS
+    "${LIBCPP_CORE_ROOT}/compat.h"
     "${LIBCPP_CORE_ROOT}/concurrency/threadsafe_queue.h"
     "${LIBCPP_CORE_ROOT}/concurrency/threadsafe_stack.h"
     "${LIBCPP_CORE_ROOT}/containers/forward_list.h"
