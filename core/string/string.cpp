@@ -95,7 +95,7 @@ namespace dev {
 	void string::construct_slow_path(const char *chars_array, size_t len) {
 		size_t bytes_to_alloc = ((len + 1) & 0x01) ? len + 2 : len + 1;
 		m_data.l.m_buffer_ptr = allocate_helper(bytes_to_alloc);
-		for (auto i{0uz}; i < len; ++i)
+		for (auto i{0}; i < len; ++i)
 			m_data.l.m_buffer_ptr[i] = chars_array[i];
 		m_data.l.m_buffer_ptr[len] = '\0';
 		set_long_size(len);
@@ -104,7 +104,7 @@ namespace dev {
 	}
 
 	void string::construct_fast_path(const char *chars_array, size_t len) {
-		for (auto i{0uz}; i < len; ++i)
+		for (auto i{0}; i < len; ++i)
 			m_data.s.m_buffer[i] = chars_array[i];
 		m_data.s.m_buffer[len] = '\0';
 		set_short_size(len);
@@ -136,7 +136,7 @@ namespace dev {
 	string::string(const string &other) {
 		if (other.is_short_string()) {
 			size_t len = other.size();
-			for (auto i{0uz}; i < len; ++i)
+			for (auto i{0}; i < len; ++i)
 				m_data.s.m_buffer[i] = other[i];
 			set_short_size(len);
 			m_data.s.m_buffer[len] = '\0';
@@ -144,7 +144,7 @@ namespace dev {
 			m_data.l.m_buffer_ptr =
 			    allocate_helper(other.m_data.l.m_capacity);
 			size_t len = other.get_long_size();
-			for (auto i{0uz}; i < len; ++i)
+			for (size_t i{0}; i < len; ++i)
 				m_data.l.m_buffer_ptr[i] = other[i];
 			m_data.l.m_size = len;
 			m_data.l.m_capacity = other.m_data.l.m_capacity;
@@ -155,7 +155,7 @@ namespace dev {
 	string::string(string &&other) {
 		if (other.is_short_string()) {
 			size_t len = other.size();
-			for (auto i{0uz}; i < len; ++i)
+			for (size_t i{0}; i < len; ++i)
 				m_data.s.m_buffer[i] = other[i];
 			set_short_size(len);
 			m_data.s.m_buffer[len] = '\0';
@@ -176,7 +176,7 @@ namespace dev {
 	}
 
 	string::string(size_t count, char ch) : string() {
-		for (auto i{0uz}; i < count; ++i)
+		for (size_t i{0}; i < count; ++i)
 			push_back(ch);
 	}
 
@@ -258,7 +258,7 @@ namespace dev {
 
 		char *mem = allocate_helper(new_capacity);
 		char *buffer_ptr = data();
-		for (auto i{0uz}; i < current_size; ++i)
+		for (size_t i{0}; i < current_size; ++i)
 			mem[i] = buffer_ptr[i];
 
 		if (is_long_string())
@@ -354,14 +354,14 @@ namespace dev {
 		size_t num_chars_erased = std::distance(first_, last_);
 
 		char *buffer_ptr = begin();
-		for (auto i{0uz}; i < num_chars_to_shift_left; ++i)
+		for (size_t i{0}; i < num_chars_to_shift_left; ++i)
 			buffer_ptr[offset + i] =
 			    buffer_ptr[offset + i + num_chars_erased];
 
 		set_size(size() - num_chars_erased);
 		buffer_ptr[size()] = '\0';
 
-		for (auto k{0uz}; k < num_chars_erased; ++k)
+		for (size_t k{0}; k < num_chars_erased; ++k)
 			buffer_ptr[size() + 1 + k] = chars_to_remove[k];
 
 		return buffer_ptr + offset;

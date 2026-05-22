@@ -277,7 +277,7 @@ TEST(PopBack, LongHeap) {
 	dev::string s("123456789012345678901234");
 	size_t original_size = s.size();
 	size_t original_capacity = s.capacity();
-	for (auto i{1uz}; i <= 23; ++i) {
+	for (size_t i{1}; i <= 23; ++i) {
 		s.pop_back();
 		EXPECT_EQ(s.size(), original_size - i);
 		EXPECT_EQ(s.capacity(), original_capacity);
@@ -328,7 +328,7 @@ TEST(Insert, SSOToHeapTransition) {
 	s.insert(s.begin() + 1, long_val.begin(), long_val.end());
 	EXPECT_EQ(s.size(), 55);
 	EXPECT_EQ(s[0], 'S');
-	for (auto i{1uz}; i <= 50; ++i)
+	for (size_t i{1}; i <= 50; ++i)
 		EXPECT_EQ(s[i], 'z');
 	EXPECT_EQ(s[51], 'm');
 	EXPECT_EQ(s[52], 'a');

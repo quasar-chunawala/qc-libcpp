@@ -17,7 +17,7 @@ namespace dev {
 	};
 
 	struct string_short {
-		static constexpr size_t capacity{23uz};
+		static constexpr size_t capacity{23};
 		char m_buffer[capacity]; // 23 bytes
 		unsigned char m_size;    // 1 byte
 	};
@@ -147,7 +147,7 @@ namespace dev {
 
 				if (n > remaining_capacity) {
 					size_t excess_capacity_reqd =
-					    std::max(n - remaining_capacity, 0uz);
+					    std::max(n - remaining_capacity, 0);
 					reserve(capacity() + excess_capacity_reqd);
 					pos_ = std::next(begin(), offset);
 				}

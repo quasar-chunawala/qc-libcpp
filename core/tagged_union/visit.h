@@ -23,7 +23,7 @@ namespace dev {
 			constexpr poly_array(std::initializer_list<T> rng)
 			    : poly_array() {
 				auto it{rng.begin()};
-				for (size_t i{0uz}; i < rng.size(); ++i) {
+				for (size_t i{0}; i < rng.size(); ++i) {
 					func_[i] = *it;
 					++it;
 				}
@@ -61,7 +61,7 @@ namespace dev {
 			    std::initializer_list<std::initializer_list<U>> rng)
 			    : poly_array{} {
 				auto it{rng.begin()};
-				for (size_t i{0uz}; i < rng.size(); ++i) {
+				for (size_t i{0}; i < rng.size(); ++i) {
 					func_[i] = *it;
 					++it;
 				}

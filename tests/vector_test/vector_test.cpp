@@ -4,7 +4,7 @@
 #include <core/containers/vector.h>
 
 struct copycounter {
-	static inline std::size_t copycount{0uz};
+	static inline std::size_t copycount{0};
 
 	copycounter() = default;
 	copycounter(const copycounter &) { ++copycount; }
@@ -83,7 +83,7 @@ TEST(VectorTest, InitializerListTest) {
 	EXPECT_EQ(!v.empty(), true);
 	EXPECT_EQ(v.size(), 5);
 	EXPECT_TRUE(v.capacity() > 0);
-	for (auto i{0uz}; i < v.size(); ++i) {
+	for (size_t i{0}; i < v.size(); ++i) {
 		EXPECT_EQ(v.at(i), i + 1);
 	}
 }
@@ -110,7 +110,7 @@ TEST(VectorTest, ThrowDuringInitializerListCtorTest) {
 TEST(VectorTest, ParameterizedConstructorTest) {
 	dev::vector v(10, 5.5);
 	EXPECT_EQ(v.size(), 10);
-	for (auto i{0uz}; i < v.size(); ++i) {
+	for (size_t i{0}; i < v.size(); ++i) {
 		EXPECT_EQ(v[i], 5.5);
 	}
 }
@@ -164,7 +164,7 @@ TEST(VectorTest, MoveConstructorTest) {
 	EXPECT_EQ(v1.size(), 0);
 	EXPECT_EQ(v1.capacity(), 0);
 	EXPECT_EQ(v2.size(), 3);
-	for (auto i{0uz}; i < v2.size(); ++i)
+	for (size_t i{0}; i < v2.size(); ++i)
 		EXPECT_EQ(v2[i], i + 1);
 }
 
@@ -205,7 +205,7 @@ TEST(VectorTest, AtTest) {
 
 TEST(VectorTest, SubscriptOperatorTest) {
 	dev::vector<int> v{1, 2, 3};
-	for (int i{0uz}; i < v.size(); ++i) {
+	for (int i{0}; i < v.size(); ++i) {
 		EXPECT_EQ(v[i], i + 1);
 	}
 }
@@ -252,7 +252,7 @@ TEST(VectorTest, ReserveTest) {
 	v2.reserve(new_capacity);
 	EXPECT_GE(v2.capacity(), new_capacity);
 	EXPECT_EQ(v2.size(), 7);
-	for (auto i{0uz}; i < v2.size(); ++i)
+	for (size_t i{0}; i < v2.size(); ++i)
 		EXPECT_EQ(v2[i], i + 1);
 }
 
@@ -261,7 +261,7 @@ TEST(VectorTest, ResizeTest) {
 	v.resize(5);
 
 	EXPECT_EQ(v.size(), 5);
-	for (auto i{0uz}; i < 3; ++i)
+	for (size_t i{0}; i < 3; ++i)
 		EXPECT_EQ(v[i], i + 1);
 
 	EXPECT_EQ(v[3], 0);
@@ -280,7 +280,7 @@ TEST(VectorTest, PushBackTest) {
 	v.push_back(3);
 
 	EXPECT_EQ(v.size(), 3);
-	for (auto i{0uz}; i < v.size(); ++i)
+	for (size_t i{0}; i < v.size(); ++i)
 		EXPECT_EQ(v[i], i + 1);
 }
 
@@ -293,7 +293,7 @@ TEST(VectorTest, PushBackSelfReferenceTest) {
 	// the vector itself e.g. vec.back()). This test is meant for such an
 	// edge case.
 	dev::vector<int> vec{1};
-	for (auto i{0uz}; i < 64; ++i) {
+	for (size_t i{0}; i < 64; ++i) {
 		vec.push_back(vec.back());
 		EXPECT_EQ(vec.back(), 1);
 	}
@@ -330,10 +330,10 @@ TEST(VectorTest, InsertAtBeginning) {
 
 	auto it = v.insert(v.begin(), src.begin(), src.end());
 
-	EXPECT_EQ(v.size(), 5uz);
+	EXPECT_EQ(v.size(), 5);
 	EXPECT_EQ(it, v.begin());
 	dev::vector<int> result{10, 20, 1, 2, 3};
-	for (auto i{0uz}; i < result.size(); ++i)
+	for (size_t i{0}; i < result.size(); ++i)
 		EXPECT_EQ(v.at(i), result.at(i));
 }
 
@@ -343,7 +343,7 @@ TEST(VectorTest, InsertAtEnd) {
 
 	auto it = v.insert(v.end(), src.begin(), src.end());
 
-	EXPECT_EQ(v.size(), 5uz);
+	EXPECT_EQ(v.size(), 5);
 	EXPECT_EQ(v, (dev::vector<int>{1, 2, 3, 10, 20}));
 }
 
@@ -353,7 +353,7 @@ TEST(VectorTest, InsertInMiddle) {
 
 	auto it = v.insert(v.begin() + 2, src.begin(), src.end());
 
-	EXPECT_EQ(v.size(), 6uz);
+	EXPECT_EQ(v.size(), 6);
 	EXPECT_EQ(it, v.begin() + 2);
 	EXPECT_EQ(v, (dev::vector<int>{1, 2, 10, 20, 3, 4}));
 }
@@ -364,7 +364,7 @@ TEST(VectorTest, InsertEmptyRange) {
 
 	auto it = v.insert(v.begin() + 1, src.begin(), src.end());
 
-	EXPECT_EQ(v.size(), 3uz);
+	EXPECT_EQ(v.size(), 3);
 	EXPECT_EQ(v, (dev::vector<int>{1, 2, 3}));
 }
 
@@ -374,7 +374,7 @@ TEST(VectorTest, InsertIntoEmptyVector) {
 
 	auto it = v.insert(v.begin(), src.begin(), src.end());
 
-	EXPECT_EQ(v.size(), 3uz);
+	EXPECT_EQ(v.size(), 3);
 	EXPECT_EQ(it, v.begin());
 	EXPECT_EQ(v, (dev::vector<int>{1, 2, 3}));
 }
@@ -382,7 +382,7 @@ TEST(VectorTest, InsertIntoEmptyVector) {
 TEST(VectorTest, InsertWithinCapacity) {
 	dev::vector<int> v;
 	v.reserve(10);
-	EXPECT_GE(v.capacity(), 10uz);
+	EXPECT_GE(v.capacity(), 10);
 	v.push_back(1);
 	v.push_back(2);
 	v.push_back(3);
@@ -391,7 +391,7 @@ TEST(VectorTest, InsertWithinCapacity) {
 	v.insert(v.begin() + 1, src.begin(), src.end());
 
 	EXPECT_EQ(v, (dev::vector<int>{1, 10, 20, 2, 3}));
-	EXPECT_GE(v.capacity(), 10uz);
+	EXPECT_GE(v.capacity(), 10);
 }
 
 TEST(VectorTest, InsertRequiresReallocation) {
@@ -402,9 +402,9 @@ TEST(VectorTest, InsertRequiresReallocation) {
 	v.insert(v.begin() + 1, src.begin(), src.end());
 
 	EXPECT_GT(v.capacity(), old_cap);
-	EXPECT_EQ(v.size(), 103uz);
+	EXPECT_EQ(v.size(), 103);
 	EXPECT_EQ(v[0], 1);
-	for (auto i{1uz}; i < 101uz; ++i)
+	for (size_t i{1}; i < 101; ++i)
 		EXPECT_EQ(v[i], 99);
 
 	EXPECT_EQ(v[101], 2);

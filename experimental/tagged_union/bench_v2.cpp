@@ -33,6 +33,6 @@ void test_variant_20_types() {
 }
 
 int main() {
-	for (size_t i{0uz}; i < 10'000'000; ++i)
+	for (size_t i{0}; i < 10'000'000; ++i)
 		test_variant_20_types();
 }
