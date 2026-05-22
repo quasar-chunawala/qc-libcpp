@@ -3,9 +3,9 @@
 #include <cstring>
 #include <iterator>
 #include <new>
+#include <stdexcept>
 #include <utility>
 
-#include <core/compat.h>
 #include <core/string/string.h>
 
 namespace dev {

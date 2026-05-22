@@ -19,7 +19,7 @@ jobs:
           run: |
             cmake -B build \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_CXX_FLAGS="-std=c++20 -Wall -Wpedantic -Wc++2b-extensions" \
+            -DCMAKE_CXX_FLAGS="-std=c++20 -Wall -Wpedantic" \
             -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
         - name: Build

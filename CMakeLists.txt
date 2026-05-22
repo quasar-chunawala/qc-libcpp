@@ -10,9 +10,9 @@ include(clang_tidy)
 # #################################################################
 # Global Settings
 # #################################################################
-set(CMAKE_CXX_STANDARD 20) # -std=c++23
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # Full C++26 support is needed
-
+set(CMAKE_CXX_STANDARD 20) # -std=c++20
+set(CMAKE_CXX_STANDARD_REQUIRED ON) 
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(ENABLE_CLANG_TIDY "" OFF)
 # set(ENABLE_CLANG_TIDY ON)
